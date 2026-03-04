@@ -239,12 +239,12 @@ footer span{color:var(--ac);}
     <div style="font-size:0.72rem;color:var(--mu2);margin-bottom:0.3rem;">Content Management System · v2.0</div>
     <div class="lsub">Selecciona tu perfil de acceso</div>
     <div class="rc">
-      <div class="rcard sel" onclick="selRole('editor',this)"><span class="ri">✏️</span><div class="rn">Editor</div><div class="rd">Crea y edita contenido</div></div>
-      <div class="rcard" onclick="selRole('manager',this)"><span class="ri">✅</span><div class="rn">Manager</div><div class="rd">Revisa y publica</div></div>
-      <div class="rcard" onclick="selRole('admin',this)"><span class="ri">⚙️</span><div class="rn">Admin</div><div class="rd">Control total</div></div>
+      <div class="rcard sel" onclick="selRole('editor',this)"><span class="ri">✏️</span><div class="rn">Toni</div><div class="rd">Crea y edita contenido</div></div>
+      <div class="rcard" onclick="selRole('manager',this)"><span class="ri">✅</span><div class="rn">Jaime</div><div class="rd">Revisa y publica</div></div>
+      <div class="rcard" onclick="selRole('admin',this)"><span class="ri">⚙️</span><div class="rn">Dani</div><div class="rd">Control total</div></div>
     </div>
     <button class="btn-login" onclick="doLogin()">Acceder al CMS →</button>
-    <div class="ln">© 2026 Prinsotel · Grupo Hotelero · www.prinsotel.com</div>
+    <div class="ln">© 2026 Prinsotel · www.prinsotel.com</div>
   </div>
 </div>
 
@@ -276,14 +276,14 @@ footer span{color:var(--ac);}
       <div class="ns" id="nsAdmin">Sistema</div>
       <div class="ni" id="niAdmin" onclick="goPage('ajustes')" style="display:none;"><span class="ico">⚙️</span>Ajustes</div>
       <div class="nav-spacer"></div>
-      <div class="nav-version">Prinsotel CMS v2.0 · Demo</div>
+      <div class="nav-version">Prinsotel CMS v2.0</div>
     </nav>
 
     <main>
 
       <!-- ══════ BIBLIOTECA ══════ -->
       <div class="pg act" id="pg-biblioteca">
-        <div class="ph"><h1>🖼️ Biblioteca Multimedia</h1><p>Todos los assets del grupo Prinsotel · <span id="lib-cnt">22 archivos</span></p></div>
+        <div class="ph"><h1>🖼️ Biblioteca Multimedia</h1><p>Busca entre todas las imágenes · <span id="lib-cnt">22 archivos</span></p></div>
         <div style="display:flex;gap:0.7rem;margin-bottom:1.2rem;flex-wrap:wrap;">
           <div style="display:flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--b);border-radius:8px;padding:6px 12px;flex:1;min-width:200px;">
             <span style="color:var(--mu);">🔍</span>
@@ -295,7 +295,7 @@ footer span{color:var(--ac);}
           <div class="chip" onclick="filterChip(this,'restaurante')" data-f="restaurante">🍽️ Rest.</div>
           <div class="chip" onclick="filterChip(this,'exterior')" data-f="exterior">🌿 Exterior</div>
           <div class="chip" onclick="filterChip(this,'spa')" data-f="spa">🧘 Spa</div>
-          <button class="btn btp" onclick="openUpload()">☁️ Subir</button>
+          <button class="btn btp" onclick="openUpload()">☁️ Subir archivo</button>
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:0.9rem;" id="lib-grid"></div>
       </div>
@@ -419,13 +419,13 @@ footer span{color:var(--ac);}
     </main>
   </div>
   <footer>
-    <div>© 2026 <span>Prinsotel</span> · Grupo Hotelero · Islas Baleares, España</div>
+    <div>© 2026 <span>Prinsotel</span> · Islas Baleares, España</div>
     <div>CMS v2.0 · Demo Interno · <span>www.prinsotel.com</span></div>
   </footer>
 </div>
 
 <!-- UPLOAD MODAL -->
-<div class="overlay" id="ov-upload">
+div class="overlay" id="ov-upload">
   <div class="mbox w500">
     <div class="mhdr"><div class="mtitle">☁️ Subir archivos</div><div class="mclose" onclick="closeMod('ov-upload')">×</div></div>
     <div id="uz" style="border:2px dashed var(--b2);border-radius:10px;padding:2rem;text-align:center;cursor:pointer;margin-bottom:1rem;" onclick="simulateUpload()">
@@ -480,8 +480,8 @@ const PHOTOS = [
   {id:7,name:'MalPas_Piscina_Infinity.jpg',size:'5.5 MB',cat:'piscina',hotel:'mal-pas',season:'verano',em:'♾️',bg:'linear-gradient(135deg,#0a1530,#052040)',tags:['infinity pool','vistas','exclusiva','lujo'],alt:'Piscina infinity de Prinsotel Mal Pas con vistas al mar'},
   {id:8,name:'Alba_Apartamento_Fam.jpg',size:'4.1 MB',cat:'habitacion',hotel:'alba',season:'general',em:'🏠',bg:'linear-gradient(135deg,#1a1a0a,#2a2a1a)',tags:['apartamento','familiar','cocina','amplio'],alt:'Apartamento familiar en Prinsotel Alba'},
   {id:9,name:'Alba_Piscina_Splash.jpg',size:'3.8 MB',cat:'piscina',hotel:'alba',season:'verano',em:'💦',bg:'linear-gradient(135deg,#0a2030,#0a1a2a)',tags:['piscina infantil','splash','niños','diversión'],alt:'Piscina splash para niños en Prinsotel Alba'},
-  {id:10,name:'Paguera_Suites.jpg',size:'5.0 MB',cat:'habitacion',hotel:'paguera',season:'general',em:'💎',bg:'linear-gradient(135deg,#1a0a2a,#2a1a3a)',tags:['suite','Cala Gran','pareja','exclusiva'],alt:'Suite de lujo con vistas a Cala Gran'},
-  {id:11,name:'Paguera_CalaGran.jpg',size:'6.8 MB',cat:'exterior',hotel:'paguera',season:'verano',em:'🏖️',bg:'linear-gradient(135deg,#1a3a1a,#0a2a3a)',tags:['playa','Cala Gran','cristalina','mediterráneo'],alt:'Cala Gran, playa frente al hotel Prinsotel Paguera'},
+  {id:10,name:'La Pineda_Suites.jpg',size:'5.0 MB',cat:'habitacion',hotel:'La Pineda',season:'general',em:'💎',bg:'linear-gradient(135deg,#1a0a2a,#2a1a3a)',tags:['suite','Cala Gran','pareja','exclusiva'],alt:'Suite de lujo con vistas a Cala Gran'},
+  {id:11,name:'La Pineda_CalaGran.jpg',size:'6.8 MB',cat:'exterior',hotel:'La Pineda',season:'verano',em:'🏖️',bg:'linear-gradient(135deg,#1a3a1a,#0a2a3a)',tags:['playa','Cala Gran','cristalina','mediterráneo'],alt:'Cala Gran, playa frente al hotel Prinsotel La Pineda'},
   {id:12,name:'LaCaleta_Hero.jpg',size:'7.2 MB',cat:'exterior',hotel:'la-caleta',season:'verano',em:'🌺',bg:'linear-gradient(135deg,#1a0a1a,#2a1a2a)',tags:['La Caleta','Menorca','jardines','lujo'],alt:'Vista general de Prinsotel La Caleta en Menorca'},
   {id:13,name:'LaCaleta_Suite.jpg',size:'4.9 MB',cat:'habitacion',hotel:'la-caleta',season:'general',em:'🌸',bg:'linear-gradient(135deg,#2a1a0a,#3a2a1a)',tags:['suite','balcón','Menorca','renovada'],alt:'Suite renovada con balcón en Prinsotel La Caleta'},
   {id:14,name:'LaCaleta_Pool.jpg',size:'5.3 MB',cat:'piscina',hotel:'la-caleta',season:'verano',em:'🌴',bg:'linear-gradient(135deg,#0a2a1a,#1a3a2a)',tags:['piscina','jardines','Menorca','familiar'],alt:'Piscina principal de Prinsotel La Caleta rodeada de jardines'},
@@ -532,10 +532,10 @@ const HOTELS = [
       {id:'r1',name:'Apartamento 1 Dormitorio',size:'45 m²',price:'Desde 95€/noche',em:'🏠',bg:'linear-gradient(135deg,#1a1a0a,#2a2a1a)',status:'published',desc:'Apartamento equipado con dormitorio, salón y cocina. Perfecto para pareja con niño.',amenities:['💈 Secador de pelo','❄️ Aire acondicionado','📺 TV','🛜 WiFi gratis','🔒 Caja fuerte','🍳 Cocina equipada','🌿 Terraza','👶 Cuna disponible'],photos:[8]},
       {id:'r2',name:'Apartamento 2 Dormitorios',size:'65 m²',price:'Desde 145€/noche',em:'👨‍👩‍👧‍👦',bg:'linear-gradient(135deg,#2a1a0a,#3a2a1a)',status:'published',desc:'Amplio apartamento para familias con dos dormitorios separados.',amenities:['💈 Secador de pelo','❄️ Aire acondicionado','📺 TV en cada hab.','🛜 WiFi gratis','🔒 Caja fuerte','🍳 Cocina equipada','🌿 Terraza grande','👶 Cuna disponible','♿ Accesible disponible'],photos:[8,9]},
     ]},
-  {id:'paguera',name:'Prinsotel Paguera',loc:'Paguera · Sudoeste de Mallorca',stars:4,em:'💎',bg:'linear-gradient(135deg,#1a0a2a,#2a1a3a)',type:'Parejas · Adultos',desc:'Suites excepcionales frente a Cala Gran. Perfecto para escapadas en pareja o con amigos.',
+  {id:'La Pineda',name:'Prinsotel La Pineda',loc:'La Pineda · Sudoeste de Mallorca',stars:4,em:'💎',bg:'linear-gradient(135deg,#1a0a2a,#2a1a3a)',type:'Parejas · Adultos',desc:'Suites excepcionales frente a Cala Gran. Perfecto para escapadas en pareja o con amigos.',
     nav:[{id:'n1',label:'Inicio',url:'/'},{id:'n2',label:'Suites',url:'/suites'},{id:'n3',label:'Cala Gran',url:'/cala-gran'},{id:'n4',label:'Experiencias',url:'/experiencias'},{id:'n5',label:'Reservar',url:'/reservar',cta:true}],
     sections:[
-      {id:'s1',name:'Hero Principal',icon:'💎',type:'Banner fullscreen',status:'published',photoId:10,title:'El lujo de Cala Gran',desc:'Suites de excepción a pasos de una de las playas más hermosas de Mallorca.',cta:'Descubrir Paguera'},
+      {id:'s1',name:'Hero Principal',icon:'💎',type:'Banner fullscreen',status:'published',photoId:10,title:'El lujo de Cala Gran',desc:'Suites de excepción a pasos de una de las playas más hermosas de Mallorca.',cta:'Descubrir La Pineda'},
       {id:'s2',name:'La Playa',icon:'🏖️',type:'Imagen fullwidth',status:'review',photoId:11,title:'Cala Gran a tus pies',desc:'Aguas cristalinas y arena blanca, a menos de 100 metros del hotel.',cta:'Ver ubicación'},
     ],
     rooms:[
@@ -568,7 +568,7 @@ const HOTELS = [
 const LANDINGS = [
   {id:'l1',name:'Oferta Verano 2026',url:'/es/ofertas/verano-2026',hotel:'Todos los hoteles',status:'published',traffic:'12.4K',date:'15 Feb 2026',icon:'☀️',bg:'linear-gradient(135deg,#2a1a0a,#3a2a0a)',clicks:847},
   {id:'l2',name:'Pack Familias Mallorca',url:'/es/ofertas/pack-familias',hotel:'La Dorada · Alba',status:'published',traffic:'8.2K',date:'20 Feb 2026',icon:'👨‍👩‍👧‍👦',bg:'linear-gradient(135deg,#0a2a1a,#1a3a1a)',clicks:392},
-  {id:'l3',name:'Escapada Romántica Paguera',url:'/es/ofertas/romantica-paguera',hotel:'Prinsotel Paguera',status:'review',traffic:'3.1K',date:'01 Mar 2026',icon:'💑',bg:'linear-gradient(135deg,#2a0a1a,#3a1a2a)',clicks:204},
+  {id:'l3',name:'Escapada Romántica La Pineda',url:'/es/ofertas/romantica-La Pineda',hotel:'Prinsotel La Pineda',status:'review',traffic:'3.1K',date:'01 Mar 2026',icon:'💑',bg:'linear-gradient(135deg,#2a0a1a,#3a1a2a)',clicks:204},
   {id:'l4',name:'Semana Santa 2026',url:'/es/ofertas/semana-santa',hotel:'Todos los hoteles',status:'draft',traffic:'—',date:'28 Feb 2026',icon:'🐣',bg:'linear-gradient(135deg,#1a2a0a,#2a3a1a)',clicks:0},
   {id:'l5',name:'Ciclismo en Mallorca',url:'/es/experiencias/ciclismo',hotel:'La Dorada',status:'published',traffic:'5.7K',date:'10 Ene 2026',icon:'🚴',bg:'linear-gradient(135deg,#0a1a2a,#1a2a3a)',clicks:321},
   {id:'l6',name:'Villas Cala Galdana',url:'/es/hoteles/villas-cala-galdana',hotel:'Villas Menorca',status:'published',traffic:'6.9K',date:'5 Ene 2026',icon:'🏡',bg:'linear-gradient(135deg,#0a2a0a,#1a3a1a)',clicks:445},
@@ -577,12 +577,12 @@ const LANDINGS = [
   {id:'l9',name:'Navidad & Fin de Año 2026',url:'/es/ofertas/navidad-2026',hotel:'Todos los hoteles',status:'draft',traffic:'—',date:'01 Mar 2026',icon:'🎄',bg:'linear-gradient(135deg,#2a0a0a,#3a1a0a)',clicks:0},
   {id:'l10',name:'Media Pensión Plus',url:'/es/regimenes/media-pension-plus',hotel:'Todos los hoteles',status:'published',traffic:'9.8K',date:'1 Dic 2025',icon:'🍽️',bg:'linear-gradient(135deg,#1a0a0a,#2a1a0a)',clicks:703},
   {id:'l11',name:'Destino Menorca',url:'/es/destinos/menorca',hotel:'La Caleta · Villas',status:'published',traffic:'15.3K',date:'10 Nov 2025',icon:'🌊',bg:'linear-gradient(135deg,#0a1a3a,#0a2a4a)',clicks:1240},
-  {id:'l12',name:'Destino Mallorca',url:'/es/destinos/mallorca',hotel:'La Dorada · Mal Pas · Alba · Paguera',status:'published',traffic:'22.1K',date:'1 Nov 2025',icon:'🏝️',bg:'linear-gradient(135deg,#1a2a0a,#2a3a1a)',clicks:1890},
+  {id:'l12',name:'Destino Mallorca',url:'/es/destinos/mallorca',hotel:'La Dorada · Mal Pas · Alba · La Pineda',status:'published',traffic:'22.1K',date:'1 Nov 2025',icon:'🏝️',bg:'linear-gradient(135deg,#1a2a0a,#2a3a1a)',clicks:1890},
 ];
 
 const APPROVALS = [
   {id:'a1',sectionId:'s3',hotel:'la-dorada',hotelName:'La Dorada',section:'Galería habitaciones',user:'Julia Martínez',date:'Hoy 10:23',status:'review',photoId:2,comment:''},
-  {id:'a2',sectionId:'s2',hotel:'paguera',hotelName:'Paguera',section:'La Playa',user:'Ana Muñoz',date:'Hoy 09:15',status:'review',photoId:11,comment:''},
+  {id:'a2',sectionId:'s2',hotel:'La Pineda',hotelName:'La Pineda',section:'La Playa',user:'Ana Muñoz',date:'Hoy 09:15',status:'review',photoId:11,comment:''},
   {id:'a3',sectionId:'r3',hotel:'la-caleta',hotelName:'La Caleta',section:'Suite de Lujo',user:'Julia Martínez',date:'Ayer 16:40',status:'review',photoId:13,comment:''},
   {id:'a4',sectionId:'s3',hotel:'la-caleta',hotelName:'La Caleta',section:'Habitaciones',user:'Ana Muñoz',date:'Ayer 11:30',status:'approved',photoId:13,comment:'Perfecto, listo para publicar.'},
   {id:'a5',sectionId:'s1',hotel:'mal-pas',hotelName:'Mal Pas',section:'Hero Principal',user:'Julia Martínez',date:'Mar 01/03',status:'published',photoId:5,comment:''},
@@ -1215,7 +1215,7 @@ function renderFooterPreview(){
       </div>
       <div>
         <div class="fp-col-title">Hoteles en Mallorca</div>
-        ${['Prinsotel La Dorada','Prinsotel Mal Pas','Prinsotel Alba','Prinsotel Paguera'].map(h=>`<a class="fp-link">→ ${h}</a>`).join('')}
+        ${['Prinsotel La Dorada','Prinsotel Mal Pas','Prinsotel Alba','Prinsotel La Pineda'].map(h=>`<a class="fp-link">→ ${h}</a>`).join('')}
       </div>
       <div>
         <div class="fp-col-title">Hoteles en Menorca</div>
