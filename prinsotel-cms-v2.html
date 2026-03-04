@@ -235,7 +235,7 @@ footer span{color:var(--ac);}
 <!-- LOGIN -->
 <div id="login">
   <div class="lb">
-    <div class="ll">PRINS<span>OTEL</span></div>
+    <div class="ll">PRINSOTEL</span></div>
     <div style="font-size:0.72rem;color:var(--mu2);margin-bottom:0.3rem;">Content Management System · v2.0</div>
     <div class="lsub">Selecciona tu perfil de acceso</div>
     <div class="rc">
@@ -252,7 +252,7 @@ footer span{color:var(--ac);}
 <div id="app">
   <header>
     <div style="display:flex;align-items:center;gap:0.8rem;">
-      <div class="hl"><div class="hli">🏨</div>PRINS<span>OTEL</span></div>
+      <div class="hl"><div class="hli">🏨</div>PRINSOTEL</span></div>
       <div class="hcms">CMS</div>
     </div>
     <div class="hr">
@@ -712,7 +712,7 @@ function renderHEHeader(h){
           <div class="form-g"><label class="form-l">Logo</label>
             <div style="background:var(--bg);border:1px solid var(--b);border-radius:7px;padding:0.8rem;display:flex;align-items:center;gap:0.8rem;">
               <span style="font-size:1.5rem;">🏨</span>
-              <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;">PRINS<span style="color:var(--ac);">OTEL</span></div>
+              <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;">PRINSOTEL</span></div>
               <button class="btn bto btn-sm" style="margin-left:auto;">Cambiar logo</button>
             </div>
           </div>
@@ -755,7 +755,7 @@ function renderHEHeader(h){
         <div style="background:#0d1b2e;border-radius:10px;overflow:hidden;border:1px solid var(--b);">
           <div style="background:var(--ac4);padding:5px 1rem;font-size:0.68rem;font-weight:700;text-align:center;color:#000;">🔥 Oferta especial: hasta 30% dto reservando antes del 31 de marzo</div>
           <div style="padding:0.8rem 1.2rem;display:flex;align-items:center;justify-content:space-between;">
-            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;">PRINS<span style="color:var(--ac);">OTEL</span></div>
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;">PRINSOTEL</span></div>
             <div style="display:flex;gap:0.8rem;font-size:0.72rem;">
               ${h.nav.filter(n=>!n.cta).map(n=>`<span style="color:var(--mu2);cursor:pointer;" onmouseenter="this.style.color='white'" onmouseleave="this.style.color='var(--mu2)'">${n.label}</span>`).join('')}
             </div>
@@ -830,7 +830,7 @@ function renderHEBody(h){
         <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:0.8rem;">📱 Vista previa de la página</div>
         <div style="background:#0a1520;border:1px solid var(--b);border-radius:10px;overflow:hidden;max-height:500px;overflow-y:auto;">
           <div style="background:#0d1b2e;padding:0.5rem 0.8rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--b);">
-            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:0.8rem;">PRINS<span style="color:var(--ac);">OTEL</span></div>
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:0.8rem;">PRINSOTEL</span></div>
             <div style="font-size:0.6rem;color:var(--mu2);">Menú</div>
           </div>
           ${h.sections.map(s=>{const photo=s.photoId?PHOTOS.find(p=>p.id===s.photoId):null;return `
@@ -848,7 +848,7 @@ function renderHEBody(h){
 function renderMiniFooter(){
   const el=document.getElementById('fp-mini');if(!el)return;
   el.innerHTML=`<div style="background:#0d1e30;padding:0.6rem;border-top:1px solid var(--b);">
-    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:0.7rem;margin-bottom:0.3rem;">PRINS<span style="color:var(--ac);">OTEL</span></div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:0.7rem;margin-bottom:0.3rem;">PRINSOTEL</span></div>
     <div style="font-size:0.55rem;color:var(--mu2);line-height:1.4;">${document.getElementById('ft-tagline')?.value||'Hoteles de lujo en Mallorca y Menorca.'}</div>
     <div style="font-size:0.5rem;color:var(--mu);margin-top:0.4rem;border-top:1px solid var(--b);padding-top:0.3rem;">© 2026 Prinsotel · Privacidad · Cookies</div>
   </div>`;
