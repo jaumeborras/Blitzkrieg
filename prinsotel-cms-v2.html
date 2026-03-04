@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Prinsotel CMS — Sistema de Gestión de Contenidos</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08111e;--sb:#0d1b2e;--card:#111f33;--card2:#162844;--b:#1e3550;--b2:#243f62;--ac:#00c2ff;--ac2:#0af0b0;--ac3:#ff6b6b;--ac4:#f5a623;--pur:#a78bfa;--tx:#ddeeff;--mu:#4a6a8a;--mu2:#7a9abb;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px;}
+
+/* LOGIN */
+#login{position:fixed;inset:0;background:radial-gradient(ellipse at 30% 50%,#0d2040 0%,#08111e 70%);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;}
+.lb{background:var(--card);border:1px solid var(--b);border-radius:18px;padding:2.5rem;width:400px;text-align:center;box-shadow:0 40px 80px #00000066;}
+.ll{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;letter-spacing:-1px;margin-bottom:4px;}
+.ll span{color:var(--ac);}
+.lsub{color:var(--mu2);font-size:0.82rem;margin-bottom:1.8rem;}
+.rc{display:flex;gap:0.8rem;margin-bottom:1.5rem;}
+.rcard{flex:1;border:2px solid var(--b);border-radius:10px;padding:1rem 0.8rem;cursor:pointer;transition:all .2s;text-align:center;}
+.rcard:hover{border-color:var(--ac)55;}
+.rcard.sel{border-color:var(--ac);background:var(--ac)0d;}
+.rcard .ri{font-size:1.8rem;display:block;margin-bottom:4px;}
+.rcard .rn{font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;}
+.rcard .rd{font-size:0.7rem;color:var(--mu2);margin-top:2px;}
+.btn-login{width:100%;padding:0.85rem;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#000;border:none;border-radius:9px;font-family:'Syne',sans-serif;font-weight:800;font-size:0.95rem;cursor:pointer;letter-spacing:0.5px;transition:all .2s;}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--ac)44;}
+.ln{font-size:0.72rem;color:var(--mu);margin-top:1rem;}
+
+/* SHELL */
+#app{display:none;flex-direction:column;min-height:100vh;}
+header{background:var(--sb);border-bottom:1px solid var(--b);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;position:sticky;top:0;z-index:200;flex-shrink:0;}
+.hl{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;display:flex;align-items:center;gap:8px;}
+.hli{width:28px;height:28px;background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.8rem;}
+.hl span{color:var(--ac);}
+.hcms{font-size:0.65rem;background:var(--card2);border:1px solid var(--b);color:var(--mu2);padding:2px 7px;border-radius:4px;font-weight:600;letter-spacing:1px;}
+.hr{display:flex;align-items:center;gap:0.8rem;font-size:0.8rem;}
+.henv{background:var(--ac2)15;border:1px solid var(--ac2)33;color:var(--ac2);padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:600;}
+.hrole{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--b);padding:4px 10px;border-radius:20px;font-size:0.78rem;}
+.rdot{width:7px;height:7px;border-radius:50%;background:var(--ac2);}
+.hnotif{position:relative;cursor:pointer;width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--b);border-radius:7px;font-size:0.9rem;}
+.nbadge{position:absolute;top:-4px;right:-4px;background:var(--ac3);color:#fff;width:15px;height:15px;border-radius:50%;font-size:0.58rem;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.btns{background:transparent;border:1px solid var(--b);color:var(--mu2);padding:4px 10px;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.btns:hover{border-color:var(--ac3);color:var(--ac3);}
+
+.layout{display:flex;flex:1;overflow:hidden;}
+
+/* SIDEBAR */
+nav{width:210px;background:var(--sb);border-right:1px solid var(--b);padding:0.8rem 0;flex-shrink:0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;display:flex;flex-direction:column;}
+.ns{font-size:0.59rem;font-weight:700;letter-spacing:2.5px;color:var(--mu);text-transform:uppercase;padding:0.8rem 1rem 0.25rem;}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 1rem;cursor:pointer;font-size:0.83rem;color:var(--mu2);border-left:2px solid transparent;transition:all .15s;margin:1px 0;}
+.ni:hover{background:var(--ac)0d;color:var(--tx);}
+.ni.act{background:var(--ac)12;color:var(--ac);border-left-color:var(--ac);font-weight:500;}
+.ni .ico{width:16px;text-align:center;font-size:0.85rem;}
+.nbg{margin-left:auto;background:var(--ac3);color:#fff;font-size:0.58rem;font-weight:700;padding:1px 6px;border-radius:9px;min-width:16px;text-align:center;}
+.nbg.b{background:var(--ac);}
+.nav-spacer{flex:1;}
+.nav-version{padding:0.8rem 1rem;font-size:0.65rem;color:var(--mu);border-top:1px solid var(--b);}
+
+/* MAIN */
+main{flex:1;overflow-y:auto;background:var(--bg);}
+.pg{display:none;padding:1.8rem 2rem;}
+.pg.act{display:block;animation:fi .22s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.ph{margin-bottom:1.5rem;}
+.ph h1{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;}
+.ph p{color:var(--mu2);font-size:0.85rem;margin-top:3px;}
+
+/* COMPONENTS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:7px;font-size:0.8rem;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .2s;text-decoration:none;}
+.btn:hover{transform:translateY(-1px);}
+.btp{background:var(--ac);color:#000;}.btp:hover{opacity:.88;}
+.bto{background:transparent;border:1px solid var(--b);color:var(--tx);}.bto:hover{border-color:var(--ac);color:var(--ac);}
+.btd{background:var(--ac3)15;border:1px solid var(--ac3)33;color:var(--ac3);}
+.bts{background:var(--ac2)15;border:1px solid var(--ac2)33;color:var(--ac2);}
+.btp2{background:var(--pur)15;border:1px solid var(--pur)33;color:var(--pur);}
+.btn-sm{padding:4px 9px;font-size:0.72rem;}
+.card{background:var(--card);border:1px solid var(--b);border-radius:10px;}
+.card-p{padding:1.2rem;}
+.tag{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:10px;font-size:0.68rem;font-weight:600;}
+.tbl{background:var(--ac)15;color:var(--ac);border:1px solid var(--ac)33;}
+.tgr{background:var(--ac2)15;color:var(--ac2);border:1px solid var(--ac2)33;}
+.tor{background:var(--ac4)15;color:var(--ac4);border:1px solid var(--ac4)33;}
+.tre{background:var(--ac3)15;color:var(--ac3);border:1px solid var(--ac3)33;}
+.tpu{background:var(--pur)15;color:var(--pur);border:1px solid var(--pur)33;}
+.tmu{background:var(--mu)22;color:var(--mu2);border:1px solid var(--mu)33;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+.alert{border-radius:8px;padding:0.75rem 1rem;display:flex;gap:0.6rem;margin-bottom:1.2rem;font-size:0.82rem;align-items:flex-start;line-height:1.5;}
+.ai{background:var(--ac)0d;border:1px solid var(--ac)25;color:var(--tx);}
+.aw{background:var(--ac4)0d;border:1px solid var(--ac4)25;color:var(--tx);}
+.ag{background:var(--ac2)0d;border:1px solid var(--ac2)25;color:var(--tx);}
+.divider{border:none;border-top:1px solid var(--b);margin:1.2rem 0;}
+.form-g{margin-bottom:0.9rem;}
+.form-l{font-size:0.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mu2);margin-bottom:0.35rem;display:block;}
+.fi{width:100%;background:var(--card2);border:1px solid var(--b);border-radius:7px;padding:7px 10px;color:var(--tx);font-size:0.83rem;font-family:'DM Sans',sans-serif;outline:none;transition:border .2s;}
+.fi:focus{border-color:var(--ac);}
+textarea.fi{resize:vertical;min-height:60px;}
+.stat{background:var(--card);border:1px solid var(--b);border-radius:10px;padding:1rem;position:relative;overflow:hidden;}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--sc,var(--ac));}
+.stat-l{font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--mu2);font-weight:700;}
+.stat-v{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;line-height:1.1;margin-top:0.2rem;}
+.stat-s{font-size:0.72rem;color:var(--mu2);margin-top:2px;}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:16px;font-size:0.75rem;cursor:pointer;transition:all .15s;border:1px solid var(--b);background:var(--card);color:var(--mu2);}
+.chip:hover,.chip.on{border-color:var(--ac)55;background:var(--ac)0d;color:var(--ac);}
+.chip-x{cursor:pointer;font-size:0.7rem;margin-left:2px;opacity:.6;}.chip-x:hover{opacity:1;}
+
+/* TOAST */
+#toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--card2);border:1px solid var(--b);border-radius:10px;padding:0.75rem 1.2rem;font-size:0.83rem;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;display:flex;align-items:center;gap:0.6rem;max-width:340px;box-shadow:0 10px 40px #00000044;}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.ok{border-color:var(--ac2)44;background:var(--ac2)0d;}
+#toast.er{border-color:var(--ac3)44;}
+
+/* MODALS */
+.overlay{position:fixed;inset:0;background:#00000099;backdrop-filter:blur(5px);z-index:400;display:none;align-items:center;justify-content:center;}
+.overlay.open{display:flex;}
+.mbox{background:var(--sb);border:1px solid var(--b);border-radius:14px;width:680px;max-width:96vw;max-height:90vh;overflow-y:auto;padding:2rem;box-shadow:0 40px 80px #00000066;}
+.mbox.w500{width:500px;}
+.mbox.w900{width:900px;}
+.mhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+.mtitle{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;}
+.mclose{background:var(--card);border:1px solid var(--b);border-radius:7px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:all .15s;}
+.mclose:hover{border-color:var(--ac3);color:var(--ac3);}
+.mftr{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid var(--b);}
+
+/* HOTEL CARD */
+.hotel-card{background:var(--card);border:1px solid var(--b);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .22s;}
+.hotel-card:hover{border-color:var(--ac)44;transform:translateY(-2px);box-shadow:0 12px 32px #00000044;}
+.hc-thumb{height:130px;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;}
+.hc-badge{position:absolute;top:8px;left:8px;background:#000000aa;backdrop-filter:blur(4px);border-radius:4px;padding:2px 6px;font-size:0.62rem;font-weight:700;letter-spacing:0.5px;}
+.hc-stars{position:absolute;top:8px;right:8px;font-size:0.7rem;color:#ffd700;}
+.hc-body{padding:0.9rem;}
+.hc-name{font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:2px;}
+.hc-loc{font-size:0.75rem;color:var(--mu2);}
+.hc-stats{display:flex;gap:0.5rem;margin-top:0.6rem;flex-wrap:wrap;}
+
+/* PAGE EDITOR */
+.pe-tabs{display:flex;gap:0;border-bottom:1px solid var(--b);margin-bottom:1.5rem;}
+.pe-tab{padding:8px 16px;font-size:0.83rem;cursor:pointer;color:var(--mu2);border-bottom:2px solid transparent;transition:all .15s;font-weight:500;}
+.pe-tab:hover{color:var(--tx);}
+.pe-tab.act{color:var(--ac);border-bottom-color:var(--ac);}
+.pe-content{display:none;}.pe-content.act{display:block;}
+
+/* DRAG & DROP SECTIONS */
+.dnd-list{display:flex;flex-direction:column;gap:0.7rem;}
+.dnd-item{background:var(--card);border:1.5px solid var(--b);border-radius:10px;transition:all .15s;cursor:default;}
+.dnd-item.dragging{opacity:.4;transform:scale(.98);}
+.dnd-item.drag-over{border-color:var(--ac);background:var(--ac)0a;transform:translateY(-2px);}
+.dnd-hdr{display:flex;align-items:center;gap:0.8rem;padding:0.8rem 1rem;cursor:pointer;}
+.dnd-grip{cursor:grab;color:var(--mu);font-size:1rem;padding:0 4px;user-select:none;}.dnd-grip:active{cursor:grabbing;}
+.dnd-icon{font-size:1.1rem;}
+.dnd-name{font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;flex:1;}
+.dnd-type{font-size:0.72rem;color:var(--mu2);}
+.dnd-actions{display:flex;gap:0.4rem;margin-left:auto;}
+.dnd-body{display:none;padding:0 1rem 1rem;border-top:1px solid var(--b);}
+.dnd-body.open{display:block;}
+.section-preview{background:var(--bg);border-radius:8px;overflow:hidden;margin-top:0.8rem;}
+.sp-hero{height:80px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;position:relative;}
+.sp-text{padding:0.6rem 0.8rem;}
+.sp-h{font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;}
+.sp-p{font-size:0.72rem;color:var(--mu2);margin-top:2px;}
+.sp-cta{display:inline-block;margin-top:0.5rem;background:var(--ac);color:#000;padding:3px 10px;border-radius:4px;font-size:0.68rem;font-weight:700;}
+
+/* NAV EDITOR */
+.nav-edit-list{display:flex;flex-direction:column;gap:0.5rem;}
+.nav-edit-item{display:flex;align-items:center;gap:0.7rem;background:var(--bg);border:1px solid var(--b);border-radius:7px;padding:0.6rem 0.8rem;cursor:grab;}
+.nav-edit-item:active{cursor:grabbing;}
+.nav-edit-item.dragging{opacity:.3;}
+.nav-edit-item.drag-over{border-color:var(--ac);background:var(--ac)0a;}
+
+/* ROOM EDITOR */
+.room-card{background:var(--card);border:1.5px solid var(--b);border-radius:10px;overflow:hidden;transition:all .2s;}
+.room-card:hover{border-color:var(--ac)44;}
+.room-thumb{height:100px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;position:relative;}
+.room-body{padding:0.8rem;}
+.room-name{font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;margin-bottom:0.4rem;}
+.room-amenities{display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.5rem;}
+.amenity-tag{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:8px;font-size:0.65rem;font-weight:600;background:var(--card2);border:1px solid var(--b);color:var(--mu2);cursor:pointer;transition:all .15s;}
+.amenity-tag:hover{border-color:var(--ac)44;color:var(--ac);}
+.amenity-tag.active{background:var(--ac)15;border-color:var(--ac)44;color:var(--ac);}
+
+/* FOOTER EDITOR */
+.footer-preview{background:#0a1520;border:1px solid var(--b);border-radius:10px;overflow:hidden;}
+.fp-top{background:#0d1e30;padding:1.5rem;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:1.5rem;}
+.fp-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;margin-bottom:0.5rem;}
+.fp-logo span{color:var(--ac);}
+.fp-tagline{font-size:0.72rem;color:var(--mu2);line-height:1.5;margin-bottom:0.8rem;}
+.fp-col-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.78rem;letter-spacing:0.5px;margin-bottom:0.6rem;color:var(--tx);}
+.fp-link{font-size:0.72rem;color:var(--mu2);display:block;margin-bottom:0.3rem;cursor:pointer;transition:color .15s;}
+.fp-link:hover{color:var(--ac);}
+.fp-social{display:flex;gap:0.5rem;margin-top:0.6rem;}
+.fp-soc-btn{width:28px;height:28px;border-radius:6px;background:var(--b);display:flex;align-items:center;justify-content:center;font-size:0.75rem;cursor:pointer;transition:all .15s;border:1px solid var(--b2);}
+.fp-soc-btn:hover{background:var(--ac);color:#000;}
+.fp-divider{height:1px;background:var(--b);margin:0 1.5rem;}
+.fp-bottom{padding:0.8rem 1.5rem;display:flex;align-items:center;justify-content:space-between;font-size:0.68rem;color:var(--mu);}
+.fp-legal{display:flex;gap:1rem;}
+.fp-legal a{color:var(--mu);cursor:pointer;text-decoration:none;transition:color .15s;}
+.fp-legal a:hover{color:var(--ac);}
+.fp-cert{display:flex;align-items:center;gap:0.5rem;}
+.fp-cert-badge{background:var(--b);border-radius:4px;padding:2px 7px;font-size:0.62rem;color:var(--mu2);}
+
+/* LANDINGS */
+.landing-row{display:flex;align-items:center;gap:1rem;padding:0.8rem 1rem;border-bottom:1px solid var(--b);transition:background .15s;cursor:pointer;}
+.landing-row:last-child{border-bottom:none;}
+.landing-row:hover{background:var(--card2);}
+.lr-ico{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.lr-name{font-weight:600;font-size:0.85rem;flex:1;}
+.lr-url{font-size:0.72rem;color:var(--mu2);}
+.lr-traffic{font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;text-align:right;min-width:60px;}
+.lr-ts{font-size:0.68rem;color:var(--mu2);}
+.sp-pill{padding:3px 10px;border-radius:12px;font-size:0.7rem;font-weight:700;}
+.sp-pub{background:var(--ac2)15;color:var(--ac2);border:1px solid var(--ac2)33;}
+.sp-dra{background:var(--ac4)15;color:var(--ac4);border:1px solid var(--ac4)33;}
+.sp-rev{background:var(--ac)15;color:var(--ac);border:1px solid var(--ac)33;}
+.sp-arc{background:var(--mu)15;color:var(--mu2);border:1px solid var(--mu)33;}
+
+/* KANBAN */
+.kboard{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+.kcol{background:var(--card);border:1px solid var(--b);border-radius:10px;padding:0.9rem;}
+.kcol-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.9rem;padding-bottom:0.7rem;border-bottom:1px solid var(--b);}
+.kcol-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;}
+.kcnt{background:var(--card2);border-radius:10px;padding:2px 7px;font-size:0.68rem;color:var(--mu2);}
+.kcard{background:var(--bg);border:1px solid var(--b);border-radius:8px;padding:0.75rem;margin-bottom:0.6rem;cursor:pointer;transition:all .2s;}
+.kcard:hover{border-color:var(--ac)44;transform:translateY(-1px);}
+.kc-img{height:55px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:0.5rem;}
+
+/* FOOTER */
+footer{background:var(--sb);border-top:1px solid var(--b);padding:0.8rem 1.5rem;display:flex;justify-content:space-between;font-size:0.7rem;color:var(--mu);flex-shrink:0;}
+footer span{color:var(--ac);}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="lb">
+    <div class="ll">PRINS<span>OTEL</span></div>
+    <div style="font-size:0.72rem;color:var(--mu2);margin-bottom:0.3rem;">Content Management System · v2.0</div>
+    <div class="lsub">Selecciona tu perfil de acceso</div>
+    <div class="rc">
+      <div class="rcard sel" onclick="selRole('editor',this)"><span class="ri">✏️</span><div class="rn">Editor</div><div class="rd">Crea y edita contenido</div></div>
+      <div class="rcard" onclick="selRole('manager',this)"><span class="ri">✅</span><div class="rn">Manager</div><div class="rd">Revisa y publica</div></div>
+      <div class="rcard" onclick="selRole('admin',this)"><span class="ri">⚙️</span><div class="rn">Admin</div><div class="rd">Control total</div></div>
+    </div>
+    <button class="btn-login" onclick="doLogin()">Acceder al CMS →</button>
+    <div class="ln">© 2026 Prinsotel · Grupo Hotelero · www.prinsotel.com</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div style="display:flex;align-items:center;gap:0.8rem;">
+      <div class="hl"><div class="hli">🏨</div>PRINS<span>OTEL</span></div>
+      <div class="hcms">CMS</div>
+    </div>
+    <div class="hr">
+      <div class="henv">🌿 www.prinsotel.com</div>
+      <div class="hnotif" onclick="goPage('aprobacion')"><span>🔔</span><span class="nbadge" id="nb">3</span></div>
+      <div class="hrole"><div class="rdot"></div><span id="rdis">Editor</span></div>
+      <button class="btns" onclick="doLogout()">Salir</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav>
+      <div class="ns">Contenido</div>
+      <div class="ni act" onclick="goPage('biblioteca')"><span class="ico">🖼️</span>Biblioteca<span class="nbg b" id="lib-nb">22</span></div>
+      <div class="ns">Gestión Web</div>
+      <div class="ni" onclick="goPage('hoteles')"><span class="ico">🏨</span>Hoteles y Páginas</div>
+      <div class="ni" onclick="goPage('landings')"><span class="ico">🎯</span>Landings</div>
+      <div class="ni" onclick="goPage('footer-ed')"><span class="ico">🔻</span>Footer Global</div>
+      <div class="ns">Flujo</div>
+      <div class="ni" onclick="goPage('aprobacion')"><span class="ico">🔄</span>Aprobaciones<span class="nbg" id="ap-nb">3</span></div>
+      <div class="ns" id="nsAdmin">Sistema</div>
+      <div class="ni" id="niAdmin" onclick="goPage('ajustes')" style="display:none;"><span class="ico">⚙️</span>Ajustes</div>
+      <div class="nav-spacer"></div>
+      <div class="nav-version">Prinsotel CMS v2.0 · Demo</div>
+    </nav>
+
+    <main>
+
+      <!-- ══════ BIBLIOTECA ══════ -->
+      <div class="pg act" id="pg-biblioteca">
+        <div class="ph"><h1>🖼️ Biblioteca Multimedia</h1><p>Todos los assets del grupo Prinsotel · <span id="lib-cnt">22 archivos</span></p></div>
+        <div style="display:flex;gap:0.7rem;margin-bottom:1.2rem;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--b);border-radius:8px;padding:6px 12px;flex:1;min-width:200px;">
+            <span style="color:var(--mu);">🔍</span>
+            <input type="text" id="lsearch" placeholder="Buscar por nombre, etiquetas, hotel..." oninput="filterLib()" style="background:none;border:none;color:var(--tx);font-size:0.83rem;outline:none;width:100%;font-family:'DM Sans',sans-serif;">
+          </div>
+          <div class="chip on" onclick="filterChip(this,'all')" data-f="all">Todos</div>
+          <div class="chip" onclick="filterChip(this,'habitacion')" data-f="habitacion">🛏️ Hab.</div>
+          <div class="chip" onclick="filterChip(this,'piscina')" data-f="piscina">🏊 Piscinas</div>
+          <div class="chip" onclick="filterChip(this,'restaurante')" data-f="restaurante">🍽️ Rest.</div>
+          <div class="chip" onclick="filterChip(this,'exterior')" data-f="exterior">🌿 Exterior</div>
+          <div class="chip" onclick="filterChip(this,'spa')" data-f="spa">🧘 Spa</div>
+          <button class="btn btp" onclick="openUpload()">☁️ Subir</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:0.9rem;" id="lib-grid"></div>
+      </div>
+
+      <!-- ══════ HOTELES ══════ -->
+      <div class="pg" id="pg-hoteles">
+        <div class="ph"><h1>🏨 Hoteles y Páginas Web</h1><p>Edita el contenido de cada propiedad del grupo</p></div>
+        <div class="grid4" style="margin-bottom:1.5rem;" id="stats-row"></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;" id="hotels-grid"></div>
+      </div>
+
+      <!-- ══════ HOTEL EDITOR ══════ -->
+      <div class="pg" id="pg-hotel-editor">
+        <div style="display:flex;align-items:center;gap:0.8rem;margin-bottom:1.5rem;">
+          <button class="btn bto btn-sm" onclick="goPage('hoteles')">← Volver</button>
+          <div>
+            <h1 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;" id="he-title">Hotel</h1>
+            <p style="color:var(--mu2);font-size:0.82rem;" id="he-loc">Ubicación</p>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:0.5rem;">
+            <button class="btn bto btn-sm" onclick="previewHotel()">👁️ Preview</button>
+            <button class="btn btp btn-sm" onclick="publishHotel()">🚀 Publicar cambios</button>
+          </div>
+        </div>
+        <div class="pe-tabs">
+          <div class="pe-tab act" onclick="heTab(this,'header')">🔝 Header</div>
+          <div class="pe-tab" onclick="heTab(this,'body')">📄 Cuerpo</div>
+          <div class="pe-tab" onclick="heTab(this,'rooms')">🛏️ Habitaciones</div>
+          <div class="pe-tab" onclick="heTab(this,'gallery')">🖼️ Galería</div>
+          <div class="pe-tab" onclick="heTab(this,'seo')">🔍 SEO</div>
+        </div>
+        <div class="pe-content act" id="het-header"></div>
+        <div class="pe-content" id="het-body"></div>
+        <div class="pe-content" id="het-rooms"></div>
+        <div class="pe-content" id="het-gallery"></div>
+        <div class="pe-content" id="het-seo"></div>
+      </div>
+
+      <!-- ══════ LANDINGS ══════ -->
+      <div class="pg" id="pg-landings">
+        <div class="ph"><h1>🎯 Gestor de Landings</h1><p>Todas las páginas de destino del grupo Prinsotel</p></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <div style="display:flex;gap:0.5rem;">
+            <div class="chip on" onclick="filterLanding(this,'all')" data-lf="all">Todas</div>
+            <div class="chip" onclick="filterLanding(this,'published')" data-lf="published">Publicadas</div>
+            <div class="chip" onclick="filterLanding(this,'draft')" data-lf="draft">Borradores</div>
+            <div class="chip" onclick="filterLanding(this,'review')" data-lf="review">En revisión</div>
+          </div>
+          <button class="btn btp btn-sm" onclick="newLanding()">+ Nueva landing</button>
+        </div>
+        <div class="card"><div id="landings-list"></div></div>
+      </div>
+
+      <!-- ══════ FOOTER EDITOR ══════ -->
+      <div class="pg" id="pg-footer-ed">
+        <div class="ph"><h1>🔻 Footer Global</h1><p>Edita el pie de página que aparece en toda la web de Prinsotel</p></div>
+        <div class="grid2" style="gap:1.5rem;margin-bottom:1.5rem;">
+          <div>
+            <div class="card card-p" style="margin-bottom:1rem;">
+              <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:1rem;">Columna 1 — Marca</div>
+              <div class="form-g"><label class="form-l">Tagline</label><textarea class="fi" id="ft-tagline" rows="2">Hoteles de lujo en Mallorca y Menorca. Experiencias mediterráneas únicas desde 1985.</textarea></div>
+              <div class="form-g"><label class="form-l">Email de contacto</label><input class="fi" id="ft-email" value="info@prinsotel.com"></div>
+              <div class="form-g"><label class="form-l">Teléfono</label><input class="fi" id="ft-phone" value="+34 971 000 000"></div>
+            </div>
+            <div class="card card-p" style="margin-bottom:1rem;">
+              <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:1rem;">Redes sociales</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+                <div class="form-g"><label class="form-l">Instagram</label><input class="fi" value="@prinsotel"></div>
+                <div class="form-g"><label class="form-l">Facebook</label><input class="fi" value="Prinsotel"></div>
+                <div class="form-g"><label class="form-l">YouTube</label><input class="fi" value="Prinsotel Hotels"></div>
+                <div class="form-g"><label class="form-l">TikTok</label><input class="fi" value="@prinsotel"></div>
+              </div>
+            </div>
+            <div class="card card-p">
+              <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:0.8rem;">Aviso legal y cookies</div>
+              <div style="display:flex;flex-direction:column;gap:0.5rem;font-size:0.82rem;">
+                <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;"><input type="checkbox" checked> Política de privacidad</label>
+                <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;"><input type="checkbox" checked> Política de cookies</label>
+                <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;"><input type="checkbox" checked> Aviso legal</label>
+                <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;"><input type="checkbox"> Condiciones de reserva</label>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:0.8rem;">Vista previa del footer</div>
+            <div class="footer-preview" id="footer-preview"></div>
+            <div style="margin-top:1rem;display:flex;gap:0.6rem;">
+              <button class="btn btp" onclick="saveFooter()">💾 Guardar footer</button>
+              <button class="btn bto" onclick="renderFooterPreview()">↻ Actualizar preview</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════ APROBACIONES ══════ -->
+      <div class="pg" id="pg-aprobacion">
+        <div class="ph"><h1>🔄 Flujo de Aprobaciones</h1><p id="ap-sub">Gestión del ciclo de vida del contenido</p></div>
+        <div id="ap-alert"></div>
+        <div class="kboard" id="kanban"></div>
+      </div>
+
+      <!-- ══════ AJUSTES ══════ -->
+      <div class="pg" id="pg-ajustes">
+        <div class="ph"><h1>⚙️ Ajustes del Sistema</h1><p>Configuración avanzada — solo Administradores</p></div>
+        <div class="grid2">
+          <div class="card card-p">
+            <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.8rem;">🌐 API de publicación</div>
+            <div class="form-g"><label class="form-l">Endpoint principal</label><input class="fi" value="https://api.prinsotel.com/cms/v1" readonly></div>
+            <div class="form-g"><label class="form-l">Estado</label><div style="font-size:0.82rem;color:var(--ac4);">⏳ Pendiente (Fase 3 del roadmap)</div></div>
+            <div class="form-g"><label class="form-l">Plataforma web actual</label><input class="fi" value="Plataforma hotelera custom · PHP/Laravel" readonly></div>
+          </div>
+          <div class="card card-p">
+            <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.8rem;">🤖 Motor de IA</div>
+            <div class="form-g"><label class="form-l">Proveedor</label><input class="fi" value="Blitzkrieg AI · Activo" readonly></div>
+            <div class="form-g"><label class="form-l">Precisión media</label><div style="font-size:0.82rem;color:var(--ac2);">✓ 94% de etiquetas aceptadas sin edición</div></div>
+            <div class="form-g"><label class="form-l">Alt text automático</label><div style="font-size:0.82rem;color:var(--ac4);">⏳ En implementación</div></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+  <footer>
+    <div>© 2026 <span>Prinsotel</span> · Grupo Hotelero · Islas Baleares, España</div>
+    <div>CMS v2.0 · Demo Interno · <span>www.prinsotel.com</span></div>
+  </footer>
+</div>
+
+<!-- UPLOAD MODAL -->
+<div class="overlay" id="ov-upload">
+  <div class="mbox w500">
+    <div class="mhdr"><div class="mtitle">☁️ Subir archivos</div><div class="mclose" onclick="closeMod('ov-upload')">×</div></div>
+    <div id="uz" style="border:2px dashed var(--b2);border-radius:10px;padding:2rem;text-align:center;cursor:pointer;margin-bottom:1rem;" onclick="simulateUpload()">
+      <div style="font-size:2.5rem;">📂</div>
+      <div style="font-size:0.875rem;color:var(--mu2);margin-top:0.5rem;">Haz clic o arrastra archivos aquí</div>
+      <div style="font-size:0.72rem;color:var(--mu);margin-top:0.3rem;">JPG, PNG, WebP · máx. 25MB · La IA etiquetará automáticamente</div>
+    </div>
+    <div id="up-prog" style="display:none;background:var(--card);border:1px solid var(--b);border-radius:8px;padding:1rem;margin-bottom:1rem;">
+      <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:0.4rem;"><span id="up-fn">imagen.jpg</span><span id="up-pct">0%</span></div>
+      <div style="height:4px;background:var(--b);border-radius:2px;overflow:hidden;"><div style="height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));transition:width .3s;" id="up-bar" data-width="0"></div></div>
+      <div style="font-size:0.7rem;color:var(--mu2);margin-top:0.5rem;">🤖 IA analizando: tipo de espacio, orientación, temporada, alt text...</div>
+    </div>
+    <div style="font-size:0.75rem;color:var(--mu2);">
+      <div style="font-weight:600;margin-bottom:0.4rem;">Etiquetas generadas automáticamente por la IA:</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.3rem;">
+        <span class="tag tgr">Tipo de espacio</span><span class="tag tgr">Orientación</span><span class="tag tgr">Temporada</span><span class="tag tgr">Categoría</span><span class="tag tgr">Alt text SEO</span><span class="tag tgr">Resolución</span><span class="tag tgr">Hotel</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ROOM EDITOR MODAL -->
+<div class="overlay" id="ov-room">
+  <div class="mbox w900">
+    <div class="mhdr"><div class="mtitle" id="rm-title">Editar habitación</div><div class="mclose" onclick="closeMod('ov-room')">×</div></div>
+    <div id="rm-body"></div>
+  </div>
+</div>
+
+<!-- LANDING MODAL -->
+<div class="overlay" id="ov-landing">
+  <div class="mbox w500">
+    <div class="mhdr"><div class="mtitle" id="ld-title">Landing</div><div class="mclose" onclick="closeMod('ov-landing')">×</div></div>
+    <div id="ld-body"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════
+const PHOTOS = [
+  {id:1,name:'LaDorada_Piscina_Ext.jpg',size:'4.8 MB',cat:'piscina',hotel:'la-dorada',season:'verano',em:'🏊',bg:'linear-gradient(135deg,#0a1a3a,#0a2a4a)',tags:['piscina exterior','verano','familiar','azul'],alt:'Piscina exterior principal de Prinsotel La Dorada'},
+  {id:2,name:'LaDorada_Hab_Doble.jpg',size:'3.9 MB',cat:'habitacion',hotel:'la-dorada',season:'general',em:'🛏️',bg:'linear-gradient(135deg,#1a1a2a,#2a2a3a)',tags:['habitación doble','matrimonial','renovada','terraza'],alt:'Habitación doble renovada con terraza en La Dorada'},
+  {id:3,name:'LaDorada_Restaurante.jpg',size:'3.2 MB',cat:'restaurante',hotel:'la-dorada',season:'general',em:'🍽️',bg:'linear-gradient(135deg,#1a0a0a,#2a1a0a)',tags:['restaurante PICCO','buffet','mediterráneo'],alt:'Restaurante PICCO de Prinsotel La Dorada'},
+  {id:4,name:'LaDorada_Giardini.jpg',size:'5.1 MB',cat:'exterior',hotel:'la-dorada',season:'primavera',em:'🌿',bg:'linear-gradient(135deg,#0a1a0a,#1a2a0a)',tags:['jardines','naturaleza','exterior','S\'Albufera'],alt:'Jardines mediterráneos de Prinsotel La Dorada'},
+  {id:5,name:'MalPas_Vista_Mar.jpg',size:'6.2 MB',cat:'exterior',hotel:'mal-pas',season:'verano',em:'🌅',bg:'linear-gradient(135deg,#0a1020,#1a2a40)',tags:['vistas al mar','Cala Ratjada','atardecer','horizonte'],alt:'Vistas panorámicas al mar desde Prinsotel Mal Pas'},
+  {id:6,name:'MalPas_Suite_Junior.jpg',size:'4.4 MB',cat:'habitacion',hotel:'mal-pas',season:'general',em:'🌊',bg:'linear-gradient(135deg,#0a1a2a,#1a2a3a)',tags:['junior suite','vistas','cama king','lujo'],alt:'Junior Suite con vistas al mar en Mal Pas'},
+  {id:7,name:'MalPas_Piscina_Infinity.jpg',size:'5.5 MB',cat:'piscina',hotel:'mal-pas',season:'verano',em:'♾️',bg:'linear-gradient(135deg,#0a1530,#052040)',tags:['infinity pool','vistas','exclusiva','lujo'],alt:'Piscina infinity de Prinsotel Mal Pas con vistas al mar'},
+  {id:8,name:'Alba_Apartamento_Fam.jpg',size:'4.1 MB',cat:'habitacion',hotel:'alba',season:'general',em:'🏠',bg:'linear-gradient(135deg,#1a1a0a,#2a2a1a)',tags:['apartamento','familiar','cocina','amplio'],alt:'Apartamento familiar en Prinsotel Alba'},
+  {id:9,name:'Alba_Piscina_Splash.jpg',size:'3.8 MB',cat:'piscina',hotel:'alba',season:'verano',em:'💦',bg:'linear-gradient(135deg,#0a2030,#0a1a2a)',tags:['piscina infantil','splash','niños','diversión'],alt:'Piscina splash para niños en Prinsotel Alba'},
+  {id:10,name:'Paguera_Suites.jpg',size:'5.0 MB',cat:'habitacion',hotel:'paguera',season:'general',em:'💎',bg:'linear-gradient(135deg,#1a0a2a,#2a1a3a)',tags:['suite','Cala Gran','pareja','exclusiva'],alt:'Suite de lujo con vistas a Cala Gran'},
+  {id:11,name:'Paguera_CalaGran.jpg',size:'6.8 MB',cat:'exterior',hotel:'paguera',season:'verano',em:'🏖️',bg:'linear-gradient(135deg,#1a3a1a,#0a2a3a)',tags:['playa','Cala Gran','cristalina','mediterráneo'],alt:'Cala Gran, playa frente al hotel Prinsotel Paguera'},
+  {id:12,name:'LaCaleta_Hero.jpg',size:'7.2 MB',cat:'exterior',hotel:'la-caleta',season:'verano',em:'🌺',bg:'linear-gradient(135deg,#1a0a1a,#2a1a2a)',tags:['La Caleta','Menorca','jardines','lujo'],alt:'Vista general de Prinsotel La Caleta en Menorca'},
+  {id:13,name:'LaCaleta_Suite.jpg',size:'4.9 MB',cat:'habitacion',hotel:'la-caleta',season:'general',em:'🌸',bg:'linear-gradient(135deg,#2a1a0a,#3a2a1a)',tags:['suite','balcón','Menorca','renovada'],alt:'Suite renovada con balcón en Prinsotel La Caleta'},
+  {id:14,name:'LaCaleta_Pool.jpg',size:'5.3 MB',cat:'piscina',hotel:'la-caleta',season:'verano',em:'🌴',bg:'linear-gradient(135deg,#0a2a1a,#1a3a2a)',tags:['piscina','jardines','Menorca','familiar'],alt:'Piscina principal de Prinsotel La Caleta rodeada de jardines'},
+  {id:15,name:'LaCaleta_SPA.jpg',size:'3.6 MB',cat:'spa',hotel:'la-caleta',season:'general',em:'🧘',bg:'linear-gradient(135deg,#1a1a2a,#2a1a2a)',tags:['spa','relax','wellness','piscina cubierta'],alt:'Zona de spa y bienestar de Prinsotel La Caleta'},
+  {id:16,name:'Villas_Exterior.jpg',size:'8.1 MB',cat:'exterior',hotel:'villas',season:'verano',em:'🏡',bg:'linear-gradient(135deg,#0a2a0a,#1a3a1a)',tags:['villa','Cala Galdana','privada','piscina propia'],alt:'Villa de lujo con piscina privada en Cala Galdana'},
+  {id:17,name:'Villas_Interior.jpg',size:'5.7 MB',cat:'habitacion',hotel:'villas',season:'general',em:'🏠',bg:'linear-gradient(135deg,#1a1a1a,#2a2a2a)',tags:['villa','interior','4 dormitorios','290m²'],alt:'Interior de villa privada Prinsotel Villas Cala Galdana'},
+  {id:18,name:'Villas_Pool_Private.jpg',size:'6.0 MB',cat:'piscina',hotel:'villas',season:'verano',em:'🫧',bg:'linear-gradient(135deg,#0a1a2a,#0a2a3a)',tags:['piscina privada','villa','exclusiva','barbacoa'],alt:'Piscina privada con zona de barbacoa en las Villas'},
+  {id:19,name:'FOOD_Picco_Burrata.jpg',size:'2.9 MB',cat:'restaurante',hotel:'all',season:'verano',em:'🧀',bg:'linear-gradient(135deg,#1a2a0a,#2a3a1a)',tags:['PICCO','burrata','mediterráneo','verano'],alt:'Burrata fresca del Restaurante PICCO'},
+  {id:20,name:'FOOD_Grill_Carne.jpg',size:'3.1 MB',cat:'restaurante',hotel:'all',season:'general',em:'🥩',bg:'linear-gradient(135deg,#2a0a0a,#3a1a0a)',tags:['grill','carne','a la carta','premium'],alt:'Selección de carnes a la brasa del Restaurante Grill'},
+  {id:21,name:'SPA_Tratamiento.jpg',size:'3.5 MB',cat:'spa',hotel:'all',season:'general',em:'💆',bg:'linear-gradient(135deg,#1a1a2a,#2a2a3a)',tags:['spa','tratamiento','masaje','wellness'],alt:'Tratamiento de spa en las instalaciones de Prinsotel'},
+  {id:22,name:'SPORT_Ciclismo.jpg',size:'4.3 MB',cat:'exterior',hotel:'la-dorada',season:'primavera',em:'🚴',bg:'linear-gradient(135deg,#1a2a0a,#0a1a1a)',tags:['ciclismo','deporte','ruta','Mallorca'],alt:'Servicio de ciclismo en Prinsotel La Dorada'},
+];
+
+const HOTELS = [
+  {id:'la-dorada',name:'Prinsotel La Dorada',loc:'Playa de Muro · Alcudia, Mallorca',stars:4,em:'🌞',bg:'linear-gradient(135deg,#1a3a1a,#0a2a3a)',type:'Familiar · Deportivo',desc:'Hotel 4★ a 200m de la Playa de Muro. Ideal para familias, ciclistas y amantes del golf. Próximo al Parque Natural de S\'Albufera.',
+    nav:[{id:'n1',label:'Inicio',url:'/'},{id:'n2',label:'Habitaciones',url:'/habitaciones'},{id:'n3',label:'Restaurantes',url:'/restaurantes'},{id:'n4',label:'Piscinas',url:'/piscinas'},{id:'n5',label:'Actividades',url:'/actividades'},{id:'n6',label:'Ofertas',url:'/ofertas'},{id:'n7',label:'Reservar',url:'/reservar',cta:true}],
+    sections:[
+      {id:'s1',name:'Hero Principal',icon:'🏖️',type:'Banner fullscreen',status:'published',photoId:1,title:'Bienvenidos a La Dorada',desc:'Tu paraíso familiar en Mallorca, a pasos de la Playa de Muro.',cta:'Reservar ahora'},
+      {id:'s2',name:'Propuesta de valor',icon:'⭐',type:'Texto + iconos',status:'published',photoId:4,title:'Una experiencia completa',desc:'Gastronomía, deporte, naturaleza y descanso en un solo destino.',cta:''},
+      {id:'s3',name:'Galería de habitaciones',icon:'🛏️',type:'Grid de fotos',status:'review',photoId:2,title:'Habitaciones y Apartamentos',desc:'Espacios renovados con todo lo que necesitas.',cta:'Ver habitaciones'},
+      {id:'s4',name:'Restaurante PICCO',icon:'🍽️',type:'Imagen + texto lateral',status:'draft',photoId:3,title:'Gastronomía mediterránea de autor',desc:'El Restaurante PICCO ofrece una cocina creativa con los mejores productos locales.',cta:'Ver menú'},
+      {id:'s5',name:'Actividades y Deporte',icon:'🚴',type:'Cards de actividades',status:'published',photoId:22,title:'Mantente activo',desc:'Ciclismo, golf, gimnasio Technogym y mucho más.',cta:'Ver actividades'},
+      {id:'s6',name:'Banner Reserva',icon:'📅',type:'CTA fullscreen',status:'published',photoId:null,title:'¿Listo para tu escapada?',desc:'Mejor precio garantizado reservando en nuestra web.',cta:'Reservar ahora'},
+    ],
+    rooms:[
+      {id:'r1',name:'Habitación Doble',size:'28 m²',price:'Desde 89€/noche',em:'🛏️',bg:'linear-gradient(135deg,#1a1a2a,#2a2a3a)',status:'published',desc:'Habitación doble renovada con cama matrimonial o dos camas individuales.',amenities:['💈 Secador de pelo','❄️ Aire acondicionado','📺 TV 43"','🛜 WiFi gratis','🔒 Caja fuerte','🧴 Amenities','☕ Cafetera','🌿 Balcón'],photos:[1,2]},
+      {id:'r2',name:'Apartamento Familiar',size:'52 m²',price:'Desde 135€/noche',em:'🏠',bg:'linear-gradient(135deg,#1a2a1a,#2a3a2a)',status:'published',desc:'Amplio apartamento con dormitorio separado, salón y cocina equipada. Ideal para familias.',amenities:['💈 Secador de pelo','❄️ Aire acondicionado','📺 TV 43"','🛜 WiFi gratis','🔒 Caja fuerte','🍳 Cocina equipada','🧴 Amenities','🌿 Terraza amplia','👨‍👩‍👧 Apto familias'],photos:[2,4]},
+      {id:'r3',name:'Junior Suite',size:'45 m²',price:'Desde 165€/noche',em:'💎',bg:'linear-gradient(135deg,#2a1a0a,#3a2a1a)',status:'review',desc:'Suite con salón independiente y vistas a los jardines o piscina.',amenities:['💈 Secador de pelo','❄️ Aire acondicionado','📺 TV 55"','🛜 WiFi gratis','🔒 Caja fuerte','🧴 Amenities premium','☕ Cafetera Nespresso','🌿 Terraza','🛁 Bañera + ducha','🌅 Vistas jardín'],photos:[2]},
+    ]},
+  {id:'mal-pas',name:'Prinsotel Mal Pas',loc:'Cala Ratjada · Noreste de Mallorca',stars:4,em:'🌊',bg:'linear-gradient(135deg,#0a1a3a,#0a2a4a)',type:'Parejas · Familias',desc:'Resort en Cala Ratjada con vistas al mar. Desde habitaciones dobles hasta apartamentos con total confort.',
+    nav:[{id:'n1',label:'Inicio',url:'/'},{id:'n2',label:'Alojamiento',url:'/alojamiento'},{id:'n3',label:'Gastronomía',url:'/gastronomia'},{id:'n4',label:'Infinity Pool',url:'/piscina'},{id:'n5',label:'Entorno',url:'/entorno'},{id:'n6',label:'Reservar',url:'/reservar',cta:true}],
+    sections:[
+      {id:'s1',name:'Hero Principal',icon:'🌊',type:'Banner fullscreen',status:'published',photoId:5,title:'Auténtico sosiego mediterráneo',desc:'El remanso de paz que buscabas en el noreste de Mallorca.',cta:'Descubrir Mal Pas'},
+      {id:'s2',name:'Infinity Pool',icon:'♾️',type:'Imagen grande + texto',status:'published',photoId:7,title:'Nuestra piscina infinita',desc:'Sumérgete en el Mediterráneo desde nuestra exclusiva infinity pool.',cta:'Ver instalaciones'},
+      {id:'s3',name:'Habitaciones',icon:'🛏️',type:'Grid habitaciones',status:'draft',photoId:6,title:'Tu refugio personal',desc:'Habitaciones y suites con vistas al mar y al jardín.',cta:'Ver habitaciones'},
+    ],
+    rooms:[
+      {id:'r1',name:'Habitación Doble Vista Mar',size:'30 m²',price:'Desde 110€/noche',em:'🌊',bg:'linear-gradient(135deg,#0a1a2a,#1a2a3a)',status:'published',desc:'Habitación doble con vistas directas al mar Mediterráneo y balcón privado.',amenities:['💈 Secador de pelo','❄️ Aire acondicionado','📺 TV 50"','🛜 WiFi gratis','🔒 Caja fuerte','🌅 Vistas al mar','🌿 Balcón privado','🧴 Amenities'],photos:[5,6]},
+      {id:'r2',name:'Junior Suite Vista Mar',size:'48 m²',price:'Desde 195€/noche',em:'💎',bg:'linear-gradient(135deg,#1a0a2a,#2a1a3a)',status:'published',desc:'Suite con salón separado y panorámica al Mediterráneo. La estancia más exclusiva de Mal Pas.',amenities:['💈 Secador de pelo','❄️ Aire acondicionado','📺 TV 65"','🛜 WiFi gratis','🔒 Caja fuerte','🌅 Vistas al mar 180°','🌿 Terraza','🛁 Bañera hidromasaje','🧴 Amenities premium','☕ Cafetera Nespresso','🍾 Bienvenida incluida'],photos:[6,7]},
+    ]},
+  {id:'alba',name:'Prinsotel Alba',loc:'Playa de Muro · Alcudia, Mallorca',stars:4,em:'☀️',bg:'linear-gradient(135deg,#2a1a0a,#3a2a0a)',type:'Familiar · Apartamentos',desc:'Complejo de apartamentos para familias con animación infantil y piscina splash. Próximo a La Dorada.',
+    nav:[{id:'n1',label:'Inicio',url:'/'},{id:'n2',label:'Apartamentos',url:'/apartamentos'},{id:'n3',label:'Piscinas',url:'/piscinas'},{id:'n4',label:'Familias',url:'/familias'},{id:'n5',label:'Reservar',url:'/reservar',cta:true}],
+    sections:[
+      {id:'s1',name:'Hero Principal',icon:'☀️',type:'Banner fullscreen',status:'published',photoId:8,title:'Vacaciones en familia',desc:'El destino perfecto para los más pequeños y los que ya no lo son tanto.',cta:'Reservar ahora'},
+      {id:'s2',name:'Piscinas',icon:'💦',type:'Imagen + texto',status:'published',photoId:9,title:'Diversión asegurada',desc:'Piscina principal y piscina splash exclusiva para niños.',cta:'Ver piscinas'},
+    ],
+    rooms:[
+      {id:'r1',name:'Apartamento 1 Dormitorio',size:'45 m²',price:'Desde 95€/noche',em:'🏠',bg:'linear-gradient(135deg,#1a1a0a,#2a2a1a)',status:'published',desc:'Apartamento equipado con dormitorio, salón y cocina. Perfecto para pareja con niño.',amenities:['💈 Secador de pelo','❄️ Aire acondicionado','📺 TV','🛜 WiFi gratis','🔒 Caja fuerte','🍳 Cocina equipada','🌿 Terraza','👶 Cuna disponible'],photos:[8]},
+      {id:'r2',name:'Apartamento 2 Dormitorios',size:'65 m²',price:'Desde 145€/noche',em:'👨‍👩‍👧‍👦',bg:'linear-gradient(135deg,#2a1a0a,#3a2a1a)',status:'published',desc:'Amplio apartamento para familias con dos dormitorios separados.',amenities:['💈 Secador de pelo','❄️ Aire acondicionado','📺 TV en cada hab.','🛜 WiFi gratis','🔒 Caja fuerte','🍳 Cocina equipada','🌿 Terraza grande','👶 Cuna disponible','♿ Accesible disponible'],photos:[8,9]},
+    ]},
+  {id:'paguera',name:'Prinsotel Paguera',loc:'Paguera · Sudoeste de Mallorca',stars:4,em:'💎',bg:'linear-gradient(135deg,#1a0a2a,#2a1a3a)',type:'Parejas · Adultos',desc:'Suites excepcionales frente a Cala Gran. Perfecto para escapadas en pareja o con amigos.',
+    nav:[{id:'n1',label:'Inicio',url:'/'},{id:'n2',label:'Suites',url:'/suites'},{id:'n3',label:'Cala Gran',url:'/cala-gran'},{id:'n4',label:'Experiencias',url:'/experiencias'},{id:'n5',label:'Reservar',url:'/reservar',cta:true}],
+    sections:[
+      {id:'s1',name:'Hero Principal',icon:'💎',type:'Banner fullscreen',status:'published',photoId:10,title:'El lujo de Cala Gran',desc:'Suites de excepción a pasos de una de las playas más hermosas de Mallorca.',cta:'Descubrir Paguera'},
+      {id:'s2',name:'La Playa',icon:'🏖️',type:'Imagen fullwidth',status:'review',photoId:11,title:'Cala Gran a tus pies',desc:'Aguas cristalinas y arena blanca, a menos de 100 metros del hotel.',cta:'Ver ubicación'},
+    ],
+    rooms:[
+      {id:'r1',name:'Suite Cala Gran',size:'55 m²',price:'Desde 220€/noche',em:'💎',bg:'linear-gradient(135deg,#1a0a2a,#2a1a3a)',status:'published',desc:'Suite de lujo con vistas a Cala Gran. Ambiente romántico y exclusivo.',amenities:['💈 Secador de pelo','❄️ Aire acondicionado','📺 Smart TV 65"','🛜 WiFi gratis','🔒 Caja fuerte','🛁 Bañera jacuzzi','🌅 Vistas Cala Gran','🌿 Terraza privada','🧴 Amenities Rituals','☕ Nespresso + minibar','🍾 Bienvenida incluida','🌹 Servicio romántico'],photos:[10,11]},
+    ]},
+  {id:'la-caleta',name:'Prinsotel La Caleta',loc:'Cala Santandría · Ciutadella, Menorca',stars:4,em:'🌺',bg:'linear-gradient(135deg,#1a0a1a,#2a1a2a)',type:'Lujo · Familias · Parejas',desc:'Oasis de lujo y relajación recién reformado. A pasos de la playa y cerca de Ciutadella.',
+    nav:[{id:'n1',label:'Inicio',url:'/'},{id:'n2',label:'Habitaciones',url:'/habitaciones'},{id:'n3',label:'Restaurantes',url:'/restaurantes'},{id:'n4',label:'Spa',url:'/spa'},{id:'n5',label:'Jardines',url:'/jardines'},{id:'n6',label:'Menorca',url:'/menorca'},{id:'n7',label:'Reservar',url:'/reservar',cta:true}],
+    sections:[
+      {id:'s1',name:'Hero Principal',icon:'🌺',type:'Banner fullscreen',status:'published',photoId:12,title:'Refugio de lujo en Menorca',desc:'La Caleta, tu oasis mediterráneo junto a Cala Santandría.',cta:'Reservar estancia'},
+      {id:'s2',name:'Spa y Bienestar',icon:'🧘',type:'Imagen + texto',status:'published',photoId:15,title:'Cuídate en Menorca',desc:'Piscina cubierta, sauna, masajes y tratamientos exclusivos.',cta:'Descubrir el spa'},
+      {id:'s3',name:'Habitaciones',icon:'🛏️',type:'Grid habitaciones',status:'approved',photoId:13,title:'Tu espacio de lujo',desc:'Suites renovadas con balcón y vistas privilegiadas.',cta:'Ver habitaciones'},
+      {id:'s4',name:'Piscina y Jardines',icon:'🌴',type:'Imagen fullwidth',status:'draft',photoId:14,title:'Jardines de ensueño',desc:'Exuberantes jardines mediterráneos y piscinas que te invitan al descanso.',cta:'Ver instalaciones'},
+    ],
+    rooms:[
+      {id:'r1',name:'Habitación Doble Estándar',size:'26 m²',price:'Desde 99€/noche',em:'🛏️',bg:'linear-gradient(135deg,#1a1a2a,#2a2a3a)',status:'published',desc:'Habitación doble renovada con todas las comodidades. Cama matrimonial o twin.',amenities:['💈 Secador de pelo','❄️ Aire acondicionado','📺 TV 40"','🛜 WiFi gratis','🔒 Caja fuerte','🧴 Amenities','🌿 Balcón'],photos:[13]},
+      {id:'r2',name:'Suite Familiar',size:'62 m²',price:'Desde 180€/noche',em:'👨‍👩‍👧',bg:'linear-gradient(135deg,#2a1a0a,#3a2a1a)',status:'published',desc:'Suite distribuida en dormitorio, salón con sofá-cama y balcón. Perfecta para familias.',amenities:['💈 Secador de pelo','❄️ Aire acondicionado','📺 TV en cada hab.','🛜 WiFi gratis','🔒 Caja fuerte','🛁 Bañera','🌿 Balcón grande','🧴 Amenities premium','☕ Cafetera'],photos:[12,13]},
+      {id:'r3',name:'Suite de Lujo',size:'80 m²',price:'Desde 295€/noche',em:'👑',bg:'linear-gradient(135deg,#2a0a1a,#3a1a2a)',status:'review',desc:'Suite premium recientemente reformada con las mejores vistas de La Caleta.',amenities:['💈 Secador de pelo','❄️ Aire acondicionado','📺 Smart TV 65"','🛜 WiFi 1Gbps','🔒 Caja fuerte','🛁 Jacuzzi privado','🌅 Vistas al jardín','🌿 Terraza XL','🧴 Amenities Hermès','☕ Cafetera Nespresso','🍾 Champagne bienvenida','🧖 Acceso spa incluido'],photos:[12,13,15]},
+    ]},
+  {id:'villas',name:'Prinsotel Villas Cala Galdana',loc:'Cala Galdana · Ferreries, Menorca',stars:5,em:'🏡',bg:'linear-gradient(135deg,#0a2a0a,#1a3a1a)',type:'Villas privadas · Lujo exclusivo',desc:'7 villas de lujo de 290m² con 4 dormitorios, 5 baños y piscina privada. La experiencia más exclusiva de Menorca.',
+    nav:[{id:'n1',label:'Las Villas',url:'/villas'},{id:'n2',label:'Servicios',url:'/servicios'},{id:'n3',label:'Cala Galdana',url:'/cala-galdana'},{id:'n4',label:'Reservar Villa',url:'/reservar',cta:true}],
+    sections:[
+      {id:'s1',name:'Hero Principal',icon:'🏡',type:'Banner fullscreen',status:'published',photoId:16,title:'Tu villa privada en Menorca',desc:'7 villas de lujo en el enclave más exclusivo de la isla.',cta:'Reservar villa'},
+      {id:'s2',name:'Piscina Privada',icon:'🫧',type:'Imagen grande',status:'published',photoId:18,title:'Tu piscina, tu mundo',desc:'Cada villa incluye piscina privada y zona de barbacoa exclusiva.',cta:'Ver más'},
+    ],
+    rooms:[
+      {id:'r1',name:'Villa Privada',size:'290 m²',price:'Desde 850€/noche',em:'🏡',bg:'linear-gradient(135deg,#0a2a0a,#1a3a1a)',status:'published',desc:'Villa unifamiliar independiente con 4 dormitorios en suite, generosas áreas comunes y espléndida terraza con barbacoa y piscina privada.',amenities:['💈 Secador de pelo (x4)','❄️ Aire acondicionado','📺 Smart TV (múltiples)','🛜 WiFi fibra','🔒 Caja fuerte','🏊 Piscina privada','🌿 Terraza + jardín privado','🍖 Barbacoa','🍳 Cocina gourmet completa','🅿️ Parking privado','🧖 Acceso spa concertado','🛁 Jacuzzi exterior','👶 Cuna disponible','🐾 Admite mascotas'],photos:[16,17,18]},
+    ]},
+];
+
+const LANDINGS = [
+  {id:'l1',name:'Oferta Verano 2026',url:'/es/ofertas/verano-2026',hotel:'Todos los hoteles',status:'published',traffic:'12.4K',date:'15 Feb 2026',icon:'☀️',bg:'linear-gradient(135deg,#2a1a0a,#3a2a0a)',clicks:847},
+  {id:'l2',name:'Pack Familias Mallorca',url:'/es/ofertas/pack-familias',hotel:'La Dorada · Alba',status:'published',traffic:'8.2K',date:'20 Feb 2026',icon:'👨‍👩‍👧‍👦',bg:'linear-gradient(135deg,#0a2a1a,#1a3a1a)',clicks:392},
+  {id:'l3',name:'Escapada Romántica Paguera',url:'/es/ofertas/romantica-paguera',hotel:'Prinsotel Paguera',status:'review',traffic:'3.1K',date:'01 Mar 2026',icon:'💑',bg:'linear-gradient(135deg,#2a0a1a,#3a1a2a)',clicks:204},
+  {id:'l4',name:'Semana Santa 2026',url:'/es/ofertas/semana-santa',hotel:'Todos los hoteles',status:'draft',traffic:'—',date:'28 Feb 2026',icon:'🐣',bg:'linear-gradient(135deg,#1a2a0a,#2a3a1a)',clicks:0},
+  {id:'l5',name:'Ciclismo en Mallorca',url:'/es/experiencias/ciclismo',hotel:'La Dorada',status:'published',traffic:'5.7K',date:'10 Ene 2026',icon:'🚴',bg:'linear-gradient(135deg,#0a1a2a,#1a2a3a)',clicks:321},
+  {id:'l6',name:'Villas Cala Galdana',url:'/es/hoteles/villas-cala-galdana',hotel:'Villas Menorca',status:'published',traffic:'6.9K',date:'5 Ene 2026',icon:'🏡',bg:'linear-gradient(135deg,#0a2a0a,#1a3a1a)',clicks:445},
+  {id:'l7',name:'Spa & Wellness Menorca',url:'/es/experiencias/spa-wellness',hotel:'La Caleta',status:'published',traffic:'4.2K',date:'12 Ene 2026',icon:'🧘',bg:'linear-gradient(135deg,#1a0a1a,#2a1a2a)',clicks:280},
+  {id:'l8',name:'Golf Mallorca',url:'/es/experiencias/golf',hotel:'La Dorada',status:'draft',traffic:'—',date:'02 Mar 2026',icon:'⛳',bg:'linear-gradient(135deg,#0a1a0a,#1a2a1a)',clicks:0},
+  {id:'l9',name:'Navidad & Fin de Año 2026',url:'/es/ofertas/navidad-2026',hotel:'Todos los hoteles',status:'draft',traffic:'—',date:'01 Mar 2026',icon:'🎄',bg:'linear-gradient(135deg,#2a0a0a,#3a1a0a)',clicks:0},
+  {id:'l10',name:'Media Pensión Plus',url:'/es/regimenes/media-pension-plus',hotel:'Todos los hoteles',status:'published',traffic:'9.8K',date:'1 Dic 2025',icon:'🍽️',bg:'linear-gradient(135deg,#1a0a0a,#2a1a0a)',clicks:703},
+  {id:'l11',name:'Destino Menorca',url:'/es/destinos/menorca',hotel:'La Caleta · Villas',status:'published',traffic:'15.3K',date:'10 Nov 2025',icon:'🌊',bg:'linear-gradient(135deg,#0a1a3a,#0a2a4a)',clicks:1240},
+  {id:'l12',name:'Destino Mallorca',url:'/es/destinos/mallorca',hotel:'La Dorada · Mal Pas · Alba · Paguera',status:'published',traffic:'22.1K',date:'1 Nov 2025',icon:'🏝️',bg:'linear-gradient(135deg,#1a2a0a,#2a3a1a)',clicks:1890},
+];
+
+const APPROVALS = [
+  {id:'a1',sectionId:'s3',hotel:'la-dorada',hotelName:'La Dorada',section:'Galería habitaciones',user:'Julia Martínez',date:'Hoy 10:23',status:'review',photoId:2,comment:''},
+  {id:'a2',sectionId:'s2',hotel:'paguera',hotelName:'Paguera',section:'La Playa',user:'Ana Muñoz',date:'Hoy 09:15',status:'review',photoId:11,comment:''},
+  {id:'a3',sectionId:'r3',hotel:'la-caleta',hotelName:'La Caleta',section:'Suite de Lujo',user:'Julia Martínez',date:'Ayer 16:40',status:'review',photoId:13,comment:''},
+  {id:'a4',sectionId:'s3',hotel:'la-caleta',hotelName:'La Caleta',section:'Habitaciones',user:'Ana Muñoz',date:'Ayer 11:30',status:'approved',photoId:13,comment:'Perfecto, listo para publicar.'},
+  {id:'a5',sectionId:'s1',hotel:'mal-pas',hotelName:'Mal Pas',section:'Hero Principal',user:'Julia Martínez',date:'Mar 01/03',status:'published',photoId:5,comment:''},
+  {id:'a6',sectionId:'s1',hotel:'alba',hotelName:'Alba',section:'Hero Principal',user:'Ana Muñoz',date:'Lun 28/02',status:'published',photoId:8,comment:''},
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let role='editor', libFilter='all', landingFilter='all', currentHotelId=null, heCurrentTab='header';
+let dragSrc=null;
+
+// ═══════════════════════════════════════════════════════════
+// LOGIN / LOGOUT
+// ═══════════════════════════════════════════════════════════
+function selRole(r,el){role=r;document.querySelectorAll('.rcard').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+function doLogin(){
+  document.getElementById('login').style.display='none';
+  const a=document.getElementById('app');a.style.display='flex';a.style.flexDirection='column';
+  document.getElementById('rdis').textContent=role==='manager'?'✅ Manager':role==='admin'?'⚙️ Admin':'✏️ Editor';
+  if(role==='admin'){document.getElementById('niAdmin').style.display='flex';}
+  renderLib();renderHotelsGrid();renderLandings();renderKanban();renderFooterPreview();
+}
+function doLogout(){document.getElementById('login').style.display='flex';document.getElementById('app').style.display='none';}
+
+// ═══════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════
+function goPage(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('act'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('act'));
+  document.getElementById('pg-'+id).classList.add('act');
+  document.querySelectorAll('.ni').forEach(n=>{if(n.getAttribute('onclick')?.includes(`'${id}'`))n.classList.add('act');});
+}
+
+// ═══════════════════════════════════════════════════════════
+// LIBRARY
+// ═══════════════════════════════════════════════════════════
+function renderLib(){
+  const s=document.getElementById('lsearch').value.toLowerCase();
+  const photos=PHOTOS.filter(p=>{
+    const mc=libFilter==='all'||p.cat===libFilter;
+    const ms=!s||p.name.toLowerCase().includes(s)||p.tags.some(t=>t.includes(s))||p.hotel.includes(s);
+    return mc&&ms;
+  });
+  document.getElementById('lib-cnt').textContent=`${photos.length} archivos`;
+  document.getElementById('lib-nb').textContent=PHOTOS.length;
+  document.getElementById('lib-grid').innerHTML=photos.map(p=>`
+    <div style="background:var(--card);border:1.5px solid var(--b);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s;" onmouseenter="this.style.borderColor='var(--ac)44';this.style.transform='translateY(-2px)'" onmouseleave="this.style.borderColor='var(--b)';this.style.transform=''" onclick="openPhotoDetail(${p.id})">
+      <div style="height:105px;background:${p.bg};display:flex;align-items:center;justify-content:center;position:relative;">
+        <span style="position:absolute;top:5px;left:5px;background:#000000aa;border-radius:3px;padding:1px 5px;font-size:0.58rem;color:var(--ac2);border:1px solid var(--ac2)33;">🤖 IA</span>
+        <span style="font-size:1.9rem;">${p.em}</span>
+      </div>
+      <div style="padding:0.6rem;">
+        <div style="font-size:0.72rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.name}</div>
+        <div style="font-size:0.65rem;color:var(--mu2);margin-top:2px;">${p.size} · ${p.cat}</div>
+      </div>
+    </div>`).join('');
+}
+function filterChip(el,f){document.querySelectorAll('.chip[data-f]').forEach(c=>c.classList.remove('on'));el.classList.add('on');libFilter=f;renderLib();}
+function filterLib(){renderLib();}
+function openPhotoDetail(id){const p=PHOTOS.find(x=>x.id===id);if(!p)return;toast(`📸 ${p.name} · ${p.size} · Etiquetas: ${p.tags.slice(0,3).join(', ')}`);}
+
+// ═══════════════════════════════════════════════════════════
+// HOTELS GRID
+// ═══════════════════════════════════════════════════════════
+function renderHotelsGrid(){
+  const allSecs=HOTELS.flatMap(h=>h.sections);
+  const stats=[
+    {l:'Secciones publicadas',v:allSecs.filter(s=>s.status==='published').length,c:'var(--ac2)',sc:'var(--ac2)'},
+    {l:'En revisión',v:allSecs.filter(s=>s.status==='review').length,c:'var(--ac)',sc:'var(--ac)'},
+    {l:'Borradores',v:allSecs.filter(s=>s.status==='draft').length,c:'var(--ac4)',sc:'var(--ac4)'},
+    {l:'Hoteles activos',v:HOTELS.length,c:'var(--pur)',sc:'var(--pur)'},
+  ];
+  document.getElementById('stats-row').innerHTML=stats.map(s=>`<div class="stat" style="--sc:${s.sc};"><div class="stat-l">${s.l}</div><div class="stat-v" style="color:${s.c};">${s.v}</div></div>`).join('');
+  document.getElementById('hotels-grid').innerHTML=HOTELS.map(h=>{
+    const secStats=h.sections.length;const pub=h.sections.filter(s=>s.status==='published').length;
+    return `<div class="hotel-card" onclick="openHotelEditor('${h.id}')">
+      <div class="hc-thumb" style="background:${h.bg};">
+        <span class="hc-badge" style="color:var(--ac2);">${h.type}</span>
+        <span class="hc-stars">${'★'.repeat(h.stars)}</span>
+        <span style="font-size:2.8rem;">${h.em}</span>
+      </div>
+      <div class="hc-body">
+        <div class="hc-name">${h.name}</div>
+        <div class="hc-loc">📍 ${h.loc}</div>
+        <div class="hc-stats">
+          <span class="tag tgr">${pub}/${secStats} publicadas</span>
+          <span class="tag tbl">${h.rooms.length} tipos hab.</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// HOTEL EDITOR
+// ═══════════════════════════════════════════════════════════
+function openHotelEditor(hid){
+  currentHotelId=hid;
+  const h=HOTELS.find(x=>x.id===hid);
+  document.getElementById('he-title').textContent=h.name;
+  document.getElementById('he-loc').textContent=`📍 ${h.loc} · ${h.type}`;
+  document.querySelectorAll('.pe-tab').forEach(t=>t.classList.remove('act'));
+  document.querySelector('.pe-tab').classList.add('act');
+  document.querySelectorAll('.pe-content').forEach(c=>c.classList.remove('act'));
+  document.getElementById('het-header').classList.add('act');
+  heCurrentTab='header';
+  renderHEHeader(h);renderHEBody(h);renderHERooms(h);renderHEGallery(h);renderHESEO(h);
+  goPage('hotel-editor');
+}
+
+function heTab(el,tab){
+  document.querySelectorAll('.pe-tab').forEach(t=>t.classList.remove('act'));
+  document.querySelectorAll('.pe-content').forEach(c=>c.classList.remove('act'));
+  el.classList.add('act');
+  document.getElementById('het-'+tab).classList.add('act');
+  heCurrentTab=tab;
+}
+
+function renderHEHeader(h){
+  document.getElementById('het-header').innerHTML=`
+    <div class="grid2" style="gap:1.5rem;">
+      <div>
+        <div class="card card-p" style="margin-bottom:1rem;">
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:1rem;">🔝 Configuración del Header</div>
+          <div class="form-g"><label class="form-l">Logo</label>
+            <div style="background:var(--bg);border:1px solid var(--b);border-radius:7px;padding:0.8rem;display:flex;align-items:center;gap:0.8rem;">
+              <span style="font-size:1.5rem;">🏨</span>
+              <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;">PRINS<span style="color:var(--ac);">OTEL</span></div>
+              <button class="btn bto btn-sm" style="margin-left:auto;">Cambiar logo</button>
+            </div>
+          </div>
+          <div class="form-g"><label class="form-l">Color de fondo del header</label>
+            <div style="display:flex;gap:0.5rem;align-items:center;">
+              <input type="color" value="#0d1b2e" style="width:40px;height:32px;border:none;border-radius:5px;cursor:pointer;background:none;">
+              <input class="fi" value="#0d1b2e" style="flex:1;">
+              <div style="width:32px;height:32px;border-radius:5px;background:#0d1b2e;border:1px solid var(--b);"></div>
+            </div>
+          </div>
+          <div class="form-g"><label class="form-l">Estilo</label>
+            <select class="fi"><option>Transparente sobre hero</option><option selected>Sólido oscuro</option><option>Blanco</option></select>
+          </div>
+          <div class="form-g"><label class="form-l">Banner de oferta activo</label>
+            <div style="display:flex;align-items:center;gap:0.7rem;">
+              <label style="position:relative;display:inline-block;width:40px;height:22px;">
+                <input type="checkbox" checked style="opacity:0;width:0;height:0;">
+                <span style="position:absolute;inset:0;background:var(--ac2);border-radius:11px;cursor:pointer;"></span>
+              </label>
+              <input class="fi" value="🔥 Oferta especial: hasta 30% dto reservando antes del 31 de marzo" style="flex:1;">
+            </div>
+          </div>
+        </div>
+        <div class="card card-p">
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:0.8rem;">🔀 Menú de navegación <span style="font-size:0.72rem;font-weight:400;color:var(--mu2);">· Arrastra para reordenar</span></div>
+          <div class="nav-edit-list" id="nav-edit-${h.id}">${h.nav.map(n=>`
+            <div class="nav-edit-item" draggable="true" data-nid="${n.id}" ondragstart="navDragStart(event,'${h.id}')" ondragover="navDragOver(event)" ondrop="navDrop(event,'${h.id}')" ondragend="navDragEnd(event)">
+              <span style="cursor:grab;color:var(--mu);font-size:0.9rem;">⠿</span>
+              <input value="${n.label}" style="background:none;border:none;color:var(--tx);font-size:0.83rem;outline:none;font-family:'DM Sans',sans-serif;flex:1;" ${n.cta?'style="color:var(--ac);"':''}>
+              <input value="${n.url}" style="background:none;border:none;color:var(--mu2);font-size:0.72rem;outline:none;font-family:'DM Sans',sans-serif;width:120px;">
+              ${n.cta?'<span class="tag tbl" style="font-size:0.6rem;">CTA</span>':''}
+              <span style="cursor:pointer;color:var(--mu);font-size:0.8rem;" onclick="this.parentElement.remove();toast('✓ Enlace eliminado')">✕</span>
+            </div>`).join('')}
+          </div>
+          <button class="btn bto btn-sm" style="margin-top:0.7rem;width:100%;" onclick="addNavItem('${h.id}')">+ Añadir enlace</button>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:0.8rem;">Vista previa del header</div>
+        <div style="background:#0d1b2e;border-radius:10px;overflow:hidden;border:1px solid var(--b);">
+          <div style="background:var(--ac4);padding:5px 1rem;font-size:0.68rem;font-weight:700;text-align:center;color:#000;">🔥 Oferta especial: hasta 30% dto reservando antes del 31 de marzo</div>
+          <div style="padding:0.8rem 1.2rem;display:flex;align-items:center;justify-content:space-between;">
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;">PRINS<span style="color:var(--ac);">OTEL</span></div>
+            <div style="display:flex;gap:0.8rem;font-size:0.72rem;">
+              ${h.nav.filter(n=>!n.cta).map(n=>`<span style="color:var(--mu2);cursor:pointer;" onmouseenter="this.style.color='white'" onmouseleave="this.style.color='var(--mu2)'">${n.label}</span>`).join('')}
+            </div>
+            ${h.nav.find(n=>n.cta)?`<div style="background:var(--ac);color:#000;padding:5px 14px;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;">${h.nav.find(n=>n.cta).label}</div>`:''}
+          </div>
+        </div>
+        <div style="margin-top:1rem;" class="card card-p">
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;margin-bottom:0.7rem;">⚙️ Opciones avanzadas</div>
+          <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;margin-bottom:0.5rem;cursor:pointer;"><input type="checkbox" checked> Header sticky (se queda fijo al hacer scroll)</label>
+          <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;margin-bottom:0.5rem;cursor:pointer;"><input type="checkbox" checked> Selector de idioma (ES / EN / DE / FR)</label>
+          <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;cursor:pointer;"><input type="checkbox"> Buscador en el header</label>
+        </div>
+      </div>
+    </div>`;
+}
+
+function addNavItem(hid){
+  const h=HOTELS.find(x=>x.id===hid);
+  const newItem={id:'n'+Date.now(),label:'Nuevo enlace',url:'/nuevo',cta:false};
+  h.nav.push(newItem);renderHEHeader(h);toast('✓ Enlace añadido al menú');
+}
+
+function renderHEBody(h){
+  const statusMap={draft:'s-draft',review:'s-review',approved:'s-approved',published:'s-published',empty:'s-draft'};
+  const statusLabel={draft:'Borrador',review:'En revisión',approved:'Aprobado',published:'Publicado',empty:'Vacío'};
+  const sColor={draft:'var(--ac4)',review:'var(--ac)',approved:'var(--ac2)',published:'var(--pur)',empty:'var(--mu)'};
+  document.getElementById('het-body').innerHTML=`
+    <div class="alert ai"><span>💡</span><div><strong>Drag & drop:</strong> Arrastra las secciones por el icono ⠿ para reordenarlas en la página. Haz clic en una sección para editarla.</div></div>
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:1.5rem;">
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem;">
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;">📄 Secciones de la página</div>
+          <button class="btn bto btn-sm" onclick="addSection('${h.id}')">+ Añadir sección</button>
+        </div>
+        <div class="dnd-list" id="dnd-${h.id}">
+          ${h.sections.map((s,i)=>{
+            const photo=s.photoId?PHOTOS.find(p=>p.id===s.photoId):null;
+            return `<div class="dnd-item" draggable="true" data-sid="${s.id}" data-hid="${h.id}"
+              ondragstart="secDragStart(event)" ondragover="secDragOver(event)" ondrop="secDrop(event,'${h.id}')" ondragend="secDragEnd(event)">
+              <div class="dnd-hdr" onclick="toggleSec(this)">
+                <span class="dnd-grip" draggable="false">⠿</span>
+                <span class="dnd-icon">${s.icon}</span>
+                <span class="dnd-name">${s.name}</span>
+                <span style="font-size:0.72rem;color:var(--mu2);">${s.type}</span>
+                <span style="padding:2px 8px;border-radius:10px;font-size:0.68rem;font-weight:700;background:${sColor[s.status]}15;color:${sColor[s.status]};border:1px solid ${sColor[s.status]}33;margin-left:0.5rem;">${statusLabel[s.status]}</span>
+                <div class="dnd-actions" onclick="event.stopPropagation()">
+                  <button class="btn bto btn-sm" onclick="editSection('${h.id}','${s.id}')">✏️ Editar</button>
+                  ${role!=='editor'||s.status==='draft'?`<button class="btn bts btn-sm" onclick="submitSection('${h.id}','${s.id}')">📤</button>`:''}
+                </div>
+              </div>
+              <div class="dnd-body">
+                <div style="display:grid;grid-template-columns:200px 1fr;gap:1rem;padding-top:0.8rem;">
+                  <div class="section-preview">
+                    <div class="sp-hero" style="background:${photo?photo.bg:'var(--card2)'};">${photo?`<span style="font-size:2rem;">${photo.em}</span>`:'<span style="font-size:0.75rem;color:var(--mu);">Sin foto</span>'}</div>
+                    <div class="sp-text">
+                      <div class="sp-h">${s.title||'Sin título'}</div>
+                      <div class="sp-p">${s.desc||'Sin descripción'}</div>
+                      ${s.cta?`<div class="sp-cta">${s.cta}</div>`:''}
+                    </div>
+                  </div>
+                  <div style="font-size:0.8rem;display:flex;flex-direction:column;gap:0.4rem;">
+                    <div><span style="color:var(--mu2);">Foto:</span> ${photo?photo.name:'No asignada'}</div>
+                    <div><span style="color:var(--mu2);">Título:</span> ${s.title||'—'}</div>
+                    <div><span style="color:var(--mu2);">CTA:</span> ${s.cta||'—'}</div>
+                  </div>
+                </div>
+              </div>
+            </div>`;}).join('')}
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:0.8rem;">📱 Vista previa de la página</div>
+        <div style="background:#0a1520;border:1px solid var(--b);border-radius:10px;overflow:hidden;max-height:500px;overflow-y:auto;">
+          <div style="background:#0d1b2e;padding:0.5rem 0.8rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--b);">
+            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:0.8rem;">PRINS<span style="color:var(--ac);">OTEL</span></div>
+            <div style="font-size:0.6rem;color:var(--mu2);">Menú</div>
+          </div>
+          ${h.sections.map(s=>{const photo=s.photoId?PHOTOS.find(p=>p.id===s.photoId):null;return `
+            <div style="border-bottom:1px solid var(--b)15;">
+              <div style="height:${s.id===h.sections[0].id?'100px':'60px'};background:${photo?photo.bg:'var(--card2)'};display:flex;align-items:center;justify-content:center;font-size:${s.id===h.sections[0].id?'1.5rem':'1rem'};">${photo?photo.em:'📷'}</div>
+              ${s.title?`<div style="padding:0.4rem 0.6rem;font-size:0.65rem;font-weight:600;">${s.title}</div>`:''}
+            </div>`;}).join('')}
+          <div id="fp-mini" style="background:#0a1520;"></div>
+        </div>
+      </div>
+    </div>`;
+  renderMiniFooter();
+}
+
+function renderMiniFooter(){
+  const el=document.getElementById('fp-mini');if(!el)return;
+  el.innerHTML=`<div style="background:#0d1e30;padding:0.6rem;border-top:1px solid var(--b);">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:0.7rem;margin-bottom:0.3rem;">PRINS<span style="color:var(--ac);">OTEL</span></div>
+    <div style="font-size:0.55rem;color:var(--mu2);line-height:1.4;">${document.getElementById('ft-tagline')?.value||'Hoteles de lujo en Mallorca y Menorca.'}</div>
+    <div style="font-size:0.5rem;color:var(--mu);margin-top:0.4rem;border-top:1px solid var(--b);padding-top:0.3rem;">© 2026 Prinsotel · Privacidad · Cookies</div>
+  </div>`;
+}
+
+function renderHERooms(h){
+  document.getElementById('het-rooms').innerHTML=`
+    <div class="alert ai"><span>🛏️</span><div>Edita los tipos de habitación: fotos, descripción, precio y <strong>etiquetas de amenities</strong>. Los cambios se sincronizan con el motor de reservas.</div></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;">Tipos de habitación — ${h.name}</div>
+      <button class="btn btp btn-sm" onclick="addRoom('${h.id}')">+ Nueva habitación</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;">
+      ${h.rooms.map(r=>`
+        <div class="room-card">
+          <div class="room-thumb" style="background:${r.bg};">
+            <span style="font-size:2.5rem;">${r.em}</span>
+            <span style="position:absolute;top:6px;right:6px;padding:2px 7px;border-radius:8px;font-size:0.62rem;font-weight:700;background:${r.status==='published'?'var(--ac2)15':'var(--ac4)15'};color:${r.status==='published'?'var(--ac2)':'var(--ac4)'};border:1px solid ${r.status==='published'?'var(--ac2)33':'var(--ac4)33'};">${r.status==='published'?'Publicada':'En revisión'}</span>
+          </div>
+          <div class="room-body">
+            <div class="room-name">${r.name}</div>
+            <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--mu2);margin-bottom:0.5rem;">
+              <span>📐 ${r.size}</span><span style="color:var(--ac4);font-weight:600;">${r.price}</span>
+            </div>
+            <div style="font-size:0.75rem;color:var(--mu2);line-height:1.5;margin-bottom:0.7rem;">${r.desc}</div>
+            <div class="room-amenities">
+              ${r.amenities.map(a=>`<div class="amenity-tag active" title="${a}">${a}</div>`).join('')}
+            </div>
+            <div style="display:flex;gap:0.4rem;margin-top:0.8rem;">
+              <button class="btn bto btn-sm" style="flex:1;" onclick="openRoomEditor('${h.id}','${r.id}')">✏️ Editar</button>
+              <button class="btn btp btn-sm" onclick="publishRoom('${h.id}','${r.id}')">📤</button>
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function renderHEGallery(h){
+  const hphotos=PHOTOS.filter(p=>p.hotel===h.id||p.hotel==='all');
+  document.getElementById('het-gallery').innerHTML=`
+    <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:1rem;">🖼️ Galería de ${h.name}</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.7rem;">
+      ${hphotos.map(p=>`
+        <div style="background:var(--card);border:1.5px solid var(--b);border-radius:8px;overflow:hidden;cursor:pointer;transition:all .2s;" onmouseenter="this.style.borderColor='var(--ac)55'" onmouseleave="this.style.borderColor='var(--b)'">
+          <div style="height:90px;background:${p.bg};display:flex;align-items:center;justify-content:center;font-size:1.8rem;">${p.em}</div>
+          <div style="padding:0.5rem;">
+            <div style="font-size:0.68rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.name}</div>
+            <div style="font-size:0.6rem;color:var(--mu2);">${p.size}</div>
+            <div style="margin-top:0.3rem;display:flex;gap:0.2rem;flex-wrap:wrap;">${p.tags.slice(0,2).map(t=>`<span class="tag tgr" style="font-size:0.55rem;">${t}</span>`).join('')}</div>
+          </div>
+        </div>`).join('')}
+      <div style="background:var(--card);border:2px dashed var(--b2);border-radius:8px;height:155px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.75rem;color:var(--mu2);" onclick="openUpload()">+ Añadir foto</div>
+    </div>`;
+}
+
+function renderHESEO(h){
+  document.getElementById('het-seo').innerHTML=`
+    <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:1rem;">🔍 SEO — ${h.name}</div>
+    <div class="grid2" style="gap:1.5rem;">
+      <div>
+        <div class="form-g"><label class="form-l">Título SEO (Title tag)</label><input class="fi" value="${h.name} — Hotel en ${h.loc.split('·')[0].trim()}"><div style="font-size:0.68rem;color:var(--mu2);margin-top:2px;">60/70 caracteres recomendados</div></div>
+        <div class="form-g"><label class="form-l">Meta descripción</label><textarea class="fi" rows="3">${h.desc}</textarea><div style="font-size:0.68rem;color:var(--mu2);margin-top:2px;">155/160 caracteres recomendados</div></div>
+        <div class="form-g"><label class="form-l">URL canónica</label><input class="fi" value="https://www.prinsotel.com/es/hoteles/${h.id}/"></div>
+        <div class="form-g"><label class="form-l">Palabras clave principales</label><input class="fi" value="hotel ${h.loc.split('·')[1]?.trim()||'mallorca'}, ${h.name.toLowerCase()}, hotel lujo baleares"></div>
+        <div class="form-g"><label class="form-l">Imagen OG (redes sociales)</label>
+          <div style="display:flex;gap:0.5rem;align-items:center;">
+            <div style="width:80px;height:50px;border-radius:5px;background:${h.bg};display:flex;align-items:center;justify-content:center;font-size:1.3rem;border:1px solid var(--b);">${h.em}</div>
+            <button class="btn bto btn-sm">Cambiar imagen OG</button>
+          </div>
+        </div>
+      </div>
+      <div class="card card-p">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;margin-bottom:0.8rem;">Vista previa en Google</div>
+        <div style="background:#fff;border-radius:8px;padding:1rem;border:1px solid #ddd;">
+          <div style="font-size:0.72rem;color:#202124;font-family:arial;">www.prinsotel.com › es › hoteles › ${h.id}</div>
+          <div style="font-size:0.9rem;color:#1a0dab;font-family:arial;margin-top:2px;cursor:pointer;">${h.name} — Hotel en ${h.loc.split('·')[0].trim()}</div>
+          <div style="font-size:0.78rem;color:#4d5156;font-family:arial;line-height:1.5;margin-top:4px;">${h.desc.slice(0,120)}...</div>
+        </div>
+        <div style="margin-top:1rem;display:flex;flex-direction:column;gap:0.5rem;font-size:0.78rem;">
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--mu2);">Indexado en Google</span><span style="color:var(--ac2);">✓ Sí</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--mu2);">Sitemap XML</span><span style="color:var(--ac2);">✓ Incluido</span></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--mu2);">Schema markup</span><span style="color:var(--ac4);">⏳ Pendiente</span></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SECTION EDITOR INLINE
+// ═══════════════════════════════════════════════════════════
+function toggleSec(hdr){hdr.nextElementSibling.classList.toggle('open');}
+
+function editSection(hid,sid){
+  const h=HOTELS.find(x=>x.id===hid);const s=h.sections.find(x=>x.id===sid);
+  const photo=s.photoId?PHOTOS.find(p=>p.id===s.photoId):null;
+  const isLocked=s.status==='published'&&role==='editor';
+  // open a mini inline editor as a simple overlay
+  document.getElementById('ov-room').querySelector('.mtitle').textContent=`✏️ Editar: ${s.name}`;
+  document.getElementById('rm-body').innerHTML=`
+    ${isLocked?'<div class="alert aw"><span>🔒</span><div>Sección publicada. Solo Manager puede editarla.</div></div>':''}
+    <div class="grid2" style="gap:1.2rem;">
+      <div>
+        <div class="form-g"><label class="form-l">Foto asignada</label>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.4rem;max-height:180px;overflow-y:auto;padding:0.5rem;background:var(--card);border:1px solid var(--b);border-radius:7px;">
+            ${PHOTOS.map(p=>`<div style="height:45px;border-radius:5px;background:${p.bg};display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;border:2px solid ${s.photoId===p.id?'var(--ac)':'transparent'};transition:all .15s;" onclick="this.parentElement.querySelectorAll('div').forEach(d=>{d.style.borderColor='transparent'});this.style.borderColor='var(--ac)';document.getElementById('sec-photo-sel').value=${p.id};document.getElementById('sec-prev').style.background='${p.bg}';document.getElementById('sec-prev').textContent='${p.em}';">${p.em}</div>`).join('')}
+          </div>
+          <input type="hidden" id="sec-photo-sel" value="${s.photoId||''}">
+        </div>
+        <div class="form-g"><label class="form-l">Título</label><input class="fi" id="sec-title" value="${s.title}" ${isLocked?'readonly':''}></div>
+        <div class="form-g"><label class="form-l">Descripción</label><textarea class="fi" id="sec-desc" rows="3" ${isLocked?'readonly':''}>${s.desc}</textarea></div>
+        <div class="form-g"><label class="form-l">CTA (botón)</label><input class="fi" id="sec-cta" value="${s.cta}" ${isLocked?'readonly':''}></div>
+      </div>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;margin-bottom:0.6rem;">Vista previa</div>
+        <div style="background:var(--bg);border:1px solid var(--b);border-radius:8px;overflow:hidden;">
+          <div id="sec-prev" style="height:100px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:${photo?photo.bg:'var(--card2)'};">${photo?photo.em:'📷'}</div>
+          <div style="padding:0.7rem;">
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;">${s.title||'Sin título'}</div>
+            <div style="font-size:0.72rem;color:var(--mu2);margin-top:3px;line-height:1.5;">${s.desc||'Sin descripción'}</div>
+            ${s.cta?`<div style="display:inline-block;margin-top:0.5rem;background:var(--ac);color:#000;padding:3px 10px;border-radius:4px;font-size:0.68rem;font-weight:700;">${s.cta}</div>`:''}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mftr">
+      <span style="padding:3px 10px;border-radius:10px;font-size:0.72rem;font-weight:700;background:var(--ac4)15;color:var(--ac4);border:1px solid var(--ac4)33;">${s.status}</span>
+      <div style="display:flex;gap:0.5rem;">
+        ${!isLocked?`<button class="btn bto" onclick="saveSec('${hid}','${sid}','draft')">💾 Borrador</button><button class="btn btp" onclick="saveSec('${hid}','${sid}','review')">📤 Enviar a revisión</button>`:''}
+        ${role==='manager'&&s.status==='review'?`<button class="btn btd" onclick="saveSec('${hid}','${sid}','draft')">✗ Rechazar</button><button class="btn bts" onclick="saveSec('${hid}','${sid}','approved')">✓ Aprobar</button>`:''}
+        ${role==='manager'&&s.status==='approved'?`<button class="btn btp2" onclick="saveSec('${hid}','${sid}','published')">🚀 Publicar</button>`:''}
+      </div>
+    </div>`;
+  document.getElementById('ov-room').classList.add('open');
+}
+
+function saveSec(hid,sid,status){
+  const h=HOTELS.find(x=>x.id===hid);const s=h.sections.find(x=>x.id===sid);
+  s.title=document.getElementById('sec-title')?.value||s.title;
+  s.desc=document.getElementById('sec-desc')?.value||s.desc;
+  s.cta=document.getElementById('sec-cta')?.value||s.cta;
+  const ps=document.getElementById('sec-photo-sel')?.value;if(ps)s.photoId=parseInt(ps);
+  s.status=status;
+  closeMod('ov-room');renderHEBody(h);renderKanban();
+  const msgs={draft:'💾 Borrador guardado',review:'📤 Enviado a revisión',approved:'✅ Aprobado',published:'🚀 ¡Publicado en www.prinsotel.com!'};
+  toast(msgs[status],'ok');
+}
+
+function submitSection(hid,sid){saveSec(hid,sid,'review');}
+function addSection(hid){
+  const h=HOTELS.find(x=>x.id===hid);
+  h.sections.push({id:'s'+Date.now(),name:'Nueva sección',icon:'📌',type:'Texto + imagen',status:'draft',photoId:null,title:'',desc:'',cta:''});
+  renderHEBody(h);toast('✓ Sección añadida');
+}
+
+// ═══════════════════════════════════════════════════════════
+// ROOM EDITOR
+// ═══════════════════════════════════════════════════════════
+const ALL_AMENITIES=['💈 Secador de pelo','❄️ Aire acondicionado','📺 TV pantalla plana','🛜 WiFi gratis','🔒 Caja fuerte','🧴 Amenities','☕ Cafetera','🌿 Balcón/Terraza','🛁 Bañera','🚿 Ducha lluvia','🛁 Jacuzzi / Hidromasaje','🏊 Acceso piscina privada','🌅 Vistas al mar','🌿 Vistas al jardín','🍳 Cocina equipada','🍾 Bienvenida incluida','🧖 Acceso spa incluido','👶 Cuna disponible','♿ Accesible','🐾 Admite mascotas','🅿️ Parking incluido','🎮 Consola de juegos','📚 Biblioteca','🌹 Servicio romántico'];
+
+function openRoomEditor(hid,rid){
+  const h=HOTELS.find(x=>x.id===hid);const r=h.rooms.find(x=>x.id===rid);
+  document.getElementById('rm-title').textContent=`🛏️ Editar habitación — ${r.name}`;
+  document.getElementById('rm-body').innerHTML=`
+    <div class="grid2" style="gap:1.5rem;">
+      <div>
+        <div class="form-g"><label class="form-l">Nombre de la habitación</label><input class="fi" id="rm-name" value="${r.name}"></div>
+        <div class="form-g"><label class="form-l">Descripción</label><textarea class="fi" id="rm-desc" rows="3">${r.desc}</textarea></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+          <div class="form-g"><label class="form-l">Superficie</label><input class="fi" id="rm-size" value="${r.size}"></div>
+          <div class="form-g"><label class="form-l">Precio desde</label><input class="fi" id="rm-price" value="${r.price}"></div>
+        </div>
+        <div class="form-g"><label class="form-l">Fotos asignadas</label>
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:0.4rem;max-height:140px;overflow-y:auto;padding:0.4rem;background:var(--card);border:1px solid var(--b);border-radius:7px;">
+            ${PHOTOS.map(p=>`<div style="height:40px;border-radius:4px;background:${p.bg};display:flex;align-items:center;justify-content:center;font-size:0.9rem;cursor:pointer;border:2px solid ${r.photos?.includes(p.id)?'var(--ac)':'transparent'};transition:all .15s;" onclick="toggleRoomPhoto(this,${p.id},'${rid}','${hid}')">${p.em}</div>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;margin-bottom:0.6rem;">🏷️ Amenities y etiquetas <span style="font-size:0.7rem;font-weight:400;color:var(--mu2);">Haz clic para activar/desactivar</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.4rem;max-height:300px;overflow-y:auto;padding:0.5rem;background:var(--card);border:1px solid var(--b);border-radius:8px;" id="amenities-grid">
+          ${ALL_AMENITIES.map(a=>`<div class="amenity-tag ${r.amenities.includes(a)?'active':''}" onclick="this.classList.toggle('active');updateAmenitiesPreview()" title="${a}">${a}</div>`).join('')}
+        </div>
+        <div style="font-size:0.7rem;color:var(--mu2);margin-top:0.4rem;" id="am-count">${r.amenities.length} amenities seleccionados</div>
+        <div style="margin-top:0.8rem;">
+          <label class="form-l">Amenity personalizado</label>
+          <div style="display:flex;gap:0.4rem;">
+            <input class="fi" id="custom-am" placeholder="Ej: 🏄 Tabla de surf incluida" style="flex:1;">
+            <button class="btn bto btn-sm" onclick="addCustomAmenity()">+ Añadir</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mftr">
+      <div></div>
+      <div style="display:flex;gap:0.5rem;">
+        <button class="btn bto" onclick="closeMod('ov-room')">Cancelar</button>
+        <button class="btn btp" onclick="saveRoom('${hid}','${rid}')">💾 Guardar cambios</button>
+        ${role==='manager'?`<button class="btn bts" onclick="saveRoom('${hid}','${rid}');publishRoom('${hid}','${rid}')">🚀 Guardar y publicar</button>`:''}
+      </div>
+    </div>`;
+  document.getElementById('ov-room').classList.add('open');
+}
+
+function addCustomAmenity(){
+  const v=document.getElementById('custom-am').value.trim();if(!v)return;
+  const el=document.createElement('div');el.className='amenity-tag active';el.textContent=v;el.onclick=function(){this.classList.toggle('active');updateAmenitiesPreview();};
+  document.getElementById('amenities-grid').appendChild(el);
+  document.getElementById('custom-am').value='';updateAmenitiesPreview();toast('✓ Amenity añadido');
+}
+
+function updateAmenitiesPreview(){
+  const active=document.querySelectorAll('#amenities-grid .amenity-tag.active');
+  document.getElementById('am-count').textContent=`${active.length} amenities seleccionados`;
+}
+
+function toggleRoomPhoto(el,pid,rid,hid){el.style.borderColor=el.style.borderColor==='var(--ac)'?'transparent':'var(--ac)';}
+
+function saveRoom(hid,rid){
+  const h=HOTELS.find(x=>x.id===hid);const r=h.rooms.find(x=>x.id===rid);
+  r.name=document.getElementById('rm-name').value;
+  r.desc=document.getElementById('rm-desc').value;
+  r.size=document.getElementById('rm-size').value;
+  r.price=document.getElementById('rm-price').value;
+  r.amenities=Array.from(document.querySelectorAll('#amenities-grid .amenity-tag.active')).map(e=>e.textContent.trim());
+  closeMod('ov-room');renderHERooms(h);toast('✅ Habitación actualizada correctamente','ok');
+}
+
+function publishRoom(hid,rid){
+  const h=HOTELS.find(x=>x.id===hid);const r=h.rooms.find(x=>x.id===rid);
+  r.status='published';renderHERooms(h);toast('🚀 Habitación publicada','ok');
+}
+
+function addRoom(hid){
+  const h=HOTELS.find(x=>x.id===hid);
+  const r={id:'r'+Date.now(),name:'Nueva habitación',size:'30 m²',price:'Desde 99€/noche',em:'🛏️',bg:'linear-gradient(135deg,#1a1a2a,#2a2a3a)',status:'draft',desc:'Descripción de la habitación.',amenities:['💈 Secador de pelo','❄️ Aire acondicionado','📺 TV pantalla plana','🛜 WiFi gratis'],photos:[]};
+  h.rooms.push(r);renderHERooms(h);toast('✓ Nueva habitación creada');
+}
+
+// ═══════════════════════════════════════════════════════════
+// DRAG & DROP (SECTIONS)
+// ═══════════════════════════════════════════════════════════
+function secDragStart(e){dragSrc=e.currentTarget;e.currentTarget.classList.add('dragging');e.dataTransfer.effectAllowed='move';}
+function secDragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';document.querySelectorAll('.dnd-item').forEach(i=>i.classList.remove('drag-over'));e.currentTarget.closest('.dnd-item').classList.add('drag-over');}
+function secDrop(e,hid){
+  e.preventDefault();const target=e.currentTarget.closest('.dnd-item');
+  if(!dragSrc||dragSrc===target)return;
+  const h=HOTELS.find(x=>x.id===hid);
+  const ids=Array.from(document.querySelectorAll(`#dnd-${hid} .dnd-item`)).map(el=>el.dataset.sid);
+  const si=ids.indexOf(dragSrc.dataset.sid),ti=ids.indexOf(target.dataset.sid);
+  const arr=h.sections;const [moved]=arr.splice(si,1);arr.splice(ti,0,moved);
+  renderHEBody(h);toast('↕️ Sección reordenada');
+}
+function secDragEnd(e){document.querySelectorAll('.dnd-item').forEach(i=>{i.classList.remove('dragging');i.classList.remove('drag-over');});}
+
+// NAV DRAG & DROP
+function navDragStart(e,hid){dragSrc=e.currentTarget;e.currentTarget.classList.add('dragging');}
+function navDragOver(e){e.preventDefault();document.querySelectorAll('.nav-edit-item').forEach(i=>i.classList.remove('drag-over'));e.currentTarget.closest('.nav-edit-item').classList.add('drag-over');}
+function navDrop(e,hid){
+  e.preventDefault();const target=e.currentTarget.closest('.nav-edit-item');
+  if(!dragSrc||dragSrc===target)return;
+  const h=HOTELS.find(x=>x.id===hid);
+  const ids=Array.from(document.querySelectorAll(`#nav-edit-${hid} .nav-edit-item`)).map(el=>el.dataset.nid);
+  const si=ids.indexOf(dragSrc.dataset.nid),ti=ids.indexOf(target.dataset.nid);
+  const arr=h.nav;const [moved]=arr.splice(si,1);arr.splice(ti,0,moved);
+  renderHEHeader(h);toast('↕️ Menú reordenado');
+}
+function navDragEnd(e){document.querySelectorAll('.nav-edit-item').forEach(i=>{i.classList.remove('dragging');i.classList.remove('drag-over');});}
+
+// ═══════════════════════════════════════════════════════════
+// HOTEL ACTIONS
+// ═══════════════════════════════════════════════════════════
+function previewHotel(){toast('👁️ Abriendo preview en nueva pestaña...');setTimeout(()=>toast('Preview disponible en: prinsotel-preview.local'),1200);}
+function publishHotel(){
+  const h=HOTELS.find(x=>x.id===currentHotelId);
+  const pending=h.sections.filter(s=>s.status==='approved');
+  pending.forEach(s=>s.status='published');
+  renderHEBody(h);renderKanban();
+  toast(`🚀 ${pending.length} secciones publicadas en www.prinsotel.com`,'ok');
+}
+
+// ═══════════════════════════════════════════════════════════
+// LANDINGS
+// ═══════════════════════════════════════════════════════════
+function renderLandings(){
+  const filtered=landingFilter==='all'?LANDINGS:LANDINGS.filter(l=>l.status===landingFilter);
+  const spMap={published:'sp-pub',draft:'sp-dra',review:'sp-rev',archived:'sp-arc'};
+  const spLabel={published:'Publicada',draft:'Borrador',review:'En revisión',archived:'Archivada'};
+  document.getElementById('landings-list').innerHTML=filtered.map(l=>`
+    <div class="landing-row" onclick="openLanding('${l.id}')">
+      <div class="lr-ico" style="background:${l.bg};">${l.icon}</div>
+      <div style="flex:1;">
+        <div class="lr-name">${l.name}</div>
+        <div class="lr-url">${l.url} · ${l.hotel}</div>
+      </div>
+      <div style="text-align:right;min-width:80px;">
+        <div class="lr-traffic" style="color:${l.traffic==='—'?'var(--mu)':'var(--ac2)'};">${l.traffic}</div>
+        <div class="lr-ts">visitas/mes</div>
+      </div>
+      <div style="text-align:right;min-width:90px;">
+        <div class="lr-traffic" style="color:var(--ac4);font-size:0.78rem;">${l.clicks?l.clicks.toLocaleString():'-'}</div>
+        <div class="lr-ts">clics/mes</div>
+      </div>
+      <div style="min-width:90px;text-align:right;"><span class="${spMap[l.status]}">${spLabel[l.status]}</span></div>
+      <div style="min-width:80px;text-align:right;font-size:0.68rem;color:var(--mu2);">${l.date}</div>
+    </div>`).join('');
+}
+
+function filterLanding(el,f){document.querySelectorAll('.chip[data-lf]').forEach(c=>c.classList.remove('on'));el.classList.add('on');landingFilter=f;renderLandings();}
+
+function openLanding(lid){
+  const l=LANDINGS.find(x=>x.id===lid);
+  document.getElementById('ld-title').textContent=`${l.icon} ${l.name}`;
+  document.getElementById('ld-body').innerHTML=`
+    <div class="form-g"><label class="form-l">Nombre de la landing</label><input class="fi" value="${l.name}"></div>
+    <div class="form-g"><label class="form-l">URL</label><input class="fi" value="${l.url}"></div>
+    <div class="form-g"><label class="form-l">Hotel(es) asociados</label><input class="fi" value="${l.hotel}"></div>
+    <div class="form-g"><label class="form-l">Estado</label>
+      <select class="fi">
+        <option ${l.status==='draft'?'selected':''}>Borrador</option>
+        <option ${l.status==='review'?'selected':''}>En revisión</option>
+        <option ${l.status==='published'?'selected':''}>Publicada</option>
+        <option ${l.status==='archived'?'selected':''}>Archivada</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;background:var(--card);border:1px solid var(--b);border-radius:8px;padding:0.8rem;margin-bottom:1rem;">
+      <div><div style="font-size:0.68rem;color:var(--mu2);">Visitas/mes</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:var(--ac2);">${l.traffic}</div></div>
+      <div><div style="font-size:0.68rem;color:var(--mu2);">Clics/mes</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;color:var(--ac4);">${l.clicks||0}</div></div>
+    </div>
+    <div class="mftr">
+      <button class="btn bto" onclick="closeMod('ov-landing')">Cerrar</button>
+      <div style="display:flex;gap:0.5rem;">
+        <button class="btn bto btn-sm">🔗 Ver en web</button>
+        <button class="btn btp" onclick="closeMod('ov-landing');toast('✅ Landing guardada','ok')">💾 Guardar</button>
+      </div>
+    </div>`;
+  document.getElementById('ov-landing').classList.add('open');
+}
+
+function newLanding(){
+  LANDINGS.unshift({id:'l'+Date.now(),name:'Nueva landing',url:'/es/nueva',hotel:'—',status:'draft',traffic:'—',date:'Hoy',icon:'📄',bg:'linear-gradient(135deg,#1a1a1a,#2a2a2a)',clicks:0});
+  renderLandings();toast('✓ Nueva landing creada');
+}
+
+// ═══════════════════════════════════════════════════════════
+// FOOTER EDITOR
+// ═══════════════════════════════════════════════════════════
+function renderFooterPreview(){
+  const tagline=document.getElementById('ft-tagline')?.value||'Hoteles de lujo en Mallorca y Menorca.';
+  const email=document.getElementById('ft-email')?.value||'info@prinsotel.com';
+  const phone=document.getElementById('ft-phone')?.value||'+34 971 000 000';
+  document.getElementById('footer-preview').innerHTML=`
+    <div class="fp-top">
+      <div>
+        <div class="fp-logo">PRINS<span>OTEL</span></div>
+        <div class="fp-tagline">${tagline}</div>
+        <div style="font-size:0.7rem;color:var(--mu2);">${phone}</div>
+        <div style="font-size:0.7rem;color:var(--mu2);margin-top:2px;">${email}</div>
+        <div class="fp-social">
+          <div class="fp-soc-btn" title="Instagram">📸</div>
+          <div class="fp-soc-btn" title="Facebook">📘</div>
+          <div class="fp-soc-btn" title="YouTube">▶️</div>
+          <div class="fp-soc-btn" title="TikTok">🎵</div>
+        </div>
+      </div>
+      <div>
+        <div class="fp-col-title">Hoteles en Mallorca</div>
+        ${['Prinsotel La Dorada','Prinsotel Mal Pas','Prinsotel Alba','Prinsotel Paguera'].map(h=>`<a class="fp-link">→ ${h}</a>`).join('')}
+      </div>
+      <div>
+        <div class="fp-col-title">Hoteles en Menorca</div>
+        ${['Prinsotel La Caleta','Prinsotel Villas Cala Galdana'].map(h=>`<a class="fp-link">→ ${h}</a>`).join('')}
+        <div class="fp-col-title" style="margin-top:0.8rem;">Destinos</div>
+        <a class="fp-link">→ Mallorca</a>
+        <a class="fp-link">→ Menorca</a>
+      </div>
+      <div>
+        <div class="fp-col-title">Información</div>
+        ${['Ofertas especiales','Política de grupos','FAQs','Trabaja con nosotros','Prensa','Contacto'].map(l=>`<a class="fp-link">${l}</a>`).join('')}
+        <div class="fp-cert" style="margin-top:0.8rem;flex-wrap:wrap;">
+          <div class="fp-cert-badge">🌿 Sostenible</div>
+          <div class="fp-cert-badge">⭐ TripAdvisor</div>
+        </div>
+      </div>
+    </div>
+    <div class="fp-divider"></div>
+    <div class="fp-bottom">
+      <div>© 2026 Prinsotel, S.A. · Grupo Hotelero · Islas Baleares, España</div>
+      <div class="fp-legal">
+        <a>Política de privacidad</a><a>Política de cookies</a><a>Aviso legal</a><a>Gestión de cookies</a>
+      </div>
+    </div>`;
+}
+
+function saveFooter(){renderFooterPreview();toast('💾 Footer actualizado y publicado en toda la web','ok');}
+
+// ═══════════════════════════════════════════════════════════
+// KANBAN
+// ═══════════════════════════════════════════════════════════
+function renderKanban(){
+  const pending=APPROVALS.filter(a=>a.status==='review').length;
+  document.getElementById('nb').textContent=pending;
+  document.getElementById('ap-nb').textContent=pending;
+  const sub=role==='manager'?`Tienes <strong>${pending}</strong> elementos pendientes de revisión.`:'Sigue el estado de tus publicaciones.';
+  document.getElementById('ap-sub').innerHTML=sub;
+  document.getElementById('ap-alert').innerHTML=pending&&role==='manager'?`<div class="alert aw"><span>⚠️</span><div>${sub} Revísalos para publicar en la web.</div></div>`:'';
+  const cols=[{k:'review',l:'En Revisión',ic:'⏳',c:'var(--ac)'},{k:'approved',l:'Aprobados',ic:'✅',c:'var(--ac2)'},{k:'published',l:'Publicados',ic:'🌐',c:'var(--pur)'},{k:'draft',l:'Rechazados/Dev.',ic:'↩️',c:'var(--ac3)'}];
+  document.getElementById('kanban').innerHTML=cols.map(col=>{
+    const items=APPROVALS.filter(a=>a.status===col.k);
+    return `<div class="kcol">
+      <div class="kcol-hdr"><div class="kcol-title" style="color:${col.c};">${col.ic} ${col.l}</div><div class="kcnt">${items.length}</div></div>
+      ${items.map(a=>{const photo=a.photoId?PHOTOS.find(p=>p.id===a.photoId):null;return `
+        <div class="kcard" onclick="openApprovalCard('${a.id}')">
+          <div class="kc-img" style="background:${photo?photo.bg:'var(--card2)'};">${photo?photo.em:'📷'}</div>
+          <div style="font-size:0.78rem;font-weight:600;">${a.section}</div>
+          <div style="font-size:0.7rem;color:var(--mu2);">${a.hotelName}</div>
+          <div style="font-size:0.68rem;color:var(--mu);margin-top:0.3rem;">👤 ${a.user} · ${a.date}</div>
+          ${a.comment?`<div style="font-size:0.68rem;color:var(--ac2);margin-top:0.3rem;">💬 "${a.comment}"</div>`:''}
+        </div>`}).join('')||`<div style="text-align:center;padding:1rem;font-size:0.75rem;color:var(--mu);">Sin elementos</div>`}
+    </div>`;}).join('');
+}
+
+function openApprovalCard(aid){
+  const a=APPROVALS.find(x=>x.id===aid);const photo=a.photoId?PHOTOS.find(p=>p.id===a.photoId):null;
+  document.getElementById('rm-title').textContent=`🔄 Revisión: ${a.section} — ${a.hotelName}`;
+  document.getElementById('rm-body').innerHTML=`
+    <div class="grid2" style="gap:1.2rem;">
+      <div>
+        <div style="height:120px;background:${photo?photo.bg:'var(--card2)'};border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:3rem;margin-bottom:1rem;">${photo?photo.em:'📷'}</div>
+        <div class="form-g"><label class="form-l">Hotel</label><input class="fi" value="${a.hotelName}" readonly></div>
+        <div class="form-g"><label class="form-l">Sección</label><input class="fi" value="${a.section}" readonly></div>
+        <div class="form-g"><label class="form-l">Enviado por</label><input class="fi" value="${a.user} · ${a.date}" readonly></div>
+      </div>
+      <div>
+        <div class="form-g"><label class="form-l">Estado actual</label>
+          <span style="padding:4px 12px;border-radius:10px;font-size:0.78rem;font-weight:700;background:var(--ac)15;color:var(--ac);border:1px solid var(--ac)33;">${a.status}</span>
+        </div>
+        ${role==='manager'?`<div class="form-g"><label class="form-l">Comentario para el editor</label><textarea class="fi" id="ap-comment" rows="3" placeholder="Opcional: indica motivo de rechazo o sugerencias...">${a.comment}</textarea></div>`:''}
+      </div>
+    </div>
+    <div class="mftr">
+      <button class="btn bto" onclick="closeMod('ov-room')">Cerrar</button>
+      ${role==='manager'&&a.status==='review'?`
+        <div style="display:flex;gap:0.5rem;">
+          <button class="btn btd" onclick="approveCard('${aid}','draft')">✗ Rechazar</button>
+          <button class="btn bts" onclick="approveCard('${aid}','approved')">✓ Aprobar</button>
+          <button class="btn btp2" onclick="approveCard('${aid}','published')">🚀 Publicar directo</button>
+        </div>`:role==='manager'&&a.status==='approved'?`<button class="btn btp2" onclick="approveCard('${aid}','published')">🚀 Publicar</button>`:'<span style="font-size:0.78rem;color:var(--mu2);">Solo los managers pueden aprobar.</span>'}
+    </div>`;
+  document.getElementById('ov-room').classList.add('open');
+}
+
+function approveCard(aid,status){
+  const a=APPROVALS.find(x=>x.id===aid);
+  a.status=status;
+  a.comment=document.getElementById('ap-comment')?.value||a.comment;
+  closeMod('ov-room');renderKanban();
+  const msgs={draft:'↩️ Rechazado y devuelto al editor',approved:'✅ Aprobado · Listo para publicar',published:'🚀 Publicado en www.prinsotel.com'};
+  toast(msgs[status],status==='published'||status==='approved'?'ok':'');
+}
+
+// ═══════════════════════════════════════════════════════════
+// UPLOAD
+// ═══════════════════════════════════════════════════════════
+function openUpload(){document.getElementById('ov-upload').classList.add('open');}
+function simulateUpload(){
+  const names=['hotel_suite_mallorca.jpg','piscina_atardecer.jpg','habitacion_vista_mar.jpg','spa_relax_menorca.jpg','restaurante_terraza.jpg'];
+  const fn=names[Math.floor(Math.random()*names.length)];
+  document.getElementById('up-fn').textContent=fn;
+  const prog=document.getElementById('up-prog');prog.style.display='block';document.getElementById('uz').style.display='none';
+  let pct=0;const bar=document.getElementById('up-bar');const pctEl=document.getElementById('up-pct');
+  const iv=setInterval(()=>{pct+=Math.random()*15;if(pct>=100){pct=100;clearInterval(iv);
+    setTimeout(()=>{closeMod('ov-upload');prog.style.display='none';document.getElementById('uz').style.display='block';bar.style.width='0%';
+      const cats=['habitacion','piscina','restaurante','exterior','spa'];
+      const ems=['🛏️','🏊','🍽️','🌿','🧘'];const ci=Math.floor(Math.random()*5);
+      PHOTOS.push({id:PHOTOS.length+1,name:fn,size:(Math.random()*4+2).toFixed(1)+' MB',cat:cats[ci],hotel:'all',season:'general',em:ems[ci],bg:`linear-gradient(135deg,hsl(${Math.random()*360},30%,10%),hsl(${Math.random()*360},30%,16%))`,tags:['nuevo'],alt:''});
+      renderLib();document.getElementById('lib-nb').textContent=PHOTOS.length;
+      toast('🤖 Imagen subida y etiquetada por IA automáticamente','ok');},500);
+  }
+  bar.style.width=pct+'%';pctEl.textContent=Math.round(pct)+'%';},120);
+}
+
+// ═══════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════
+function closeMod(id){document.getElementById(id).classList.remove('open');}
+function toast(msg,type=''){
+  const t=document.getElementById('toast');t.textContent=msg;t.className='show'+(type?' '+type:'');
+  setTimeout(()=>t.className='',3500);
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));});
+</script>
+</body>
+</html>
